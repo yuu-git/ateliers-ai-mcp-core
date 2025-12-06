@@ -1,4 +1,4 @@
-﻿namespace Ateliers.Ai.Mcp.Core
+﻿namespace Ateliers.Ai.Mcp
 {
     /// <summary>
     /// MCPのアセンブリ情報を提供するインターフェイス
