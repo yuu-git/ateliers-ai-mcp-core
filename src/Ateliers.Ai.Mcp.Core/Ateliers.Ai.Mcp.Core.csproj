@@ -1,0 +1,43 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+
+    <!-- NuGet パッケージ情報 -->
+    <Version>0.1.0</Version>
+    <PackageId>Ateliers.Ai.Mcp.Core</PackageId>
+    <Authors>yuu-git</Authors>
+    <Company>ateliers.dev</Company>
+    <Product>Ateliers AI MCP</Product>
+    <Description>Core library for Ateliers AI Model Context Protocol (MCP) implementation</Description>
+    <PackageTags>mcp;ai;core;infrastructure</PackageTags>
+    <PackageProjectUrl>https://github.com/yuu-git/ateliers-ai-mcp-core</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/yuu-git/ateliers-ai-mcp-core</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <!-- Assembly情報の自動生成（追加） -->
+    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <FileVersion>0.1.0.0</FileVersion>
+    <InformationalVersion>0.1.0</InformationalVersion>
+
+    <!-- NuGet パッケージ設定 -->
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <!-- README を NuGet パッケージに含める -->
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <!-- 基本的な依存パッケージ -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+  </ItemGroup>
+</Project>

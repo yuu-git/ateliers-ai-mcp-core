@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/solution items/">
+    <File Path=".github/workflows/ci-cd.yml" />
+    <File Path=".gitignore" />
+    <File Path="LICENSE" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Ateliers.Ai.Mcp.Core/Ateliers.Ai.Mcp.Core.csproj" Id="4c5d14ea-cf0c-4c84-8c10-6338b56e747e" />
+  </Folder>
+  <Folder Name="/src/unit tests/">
+    <Project Path="src/Ateliers.Ai.Mcp.Core.UnitTests/Ateliers.Ai.Mcp.Core.UnitTests.csproj" Id="064eaf24-5139-41b6-b211-81826adc5f31" />
+  </Folder>
+</Solution>
