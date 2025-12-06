@@ -3,6 +3,7 @@
     <File Path=".github/workflows/ci-cd.yml" />
     <File Path=".gitignore" />
     <File Path="LICENSE" />
+    <File Path="README.md" />
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/Ateliers.Ai.Mcp.Core/Ateliers.Ai.Mcp.Core.csproj" Id="4c5d14ea-cf0c-4c84-8c10-6338b56e747e" />
