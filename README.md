@@ -4,39 +4,39 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![.NET](https://img.shields.io/badge/.NET-10.0-purple.svg)](https://dotnet.microsoft.com/)
 
-Core library for building [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) implementations in C#.
+C#で[Model Context Protocol (MCP)](https://modelcontextprotocol.io/)実装を構築するためのコアライブラリです。
 
-## Installation
+## インストール
 
 ```bash
 dotnet add package Ateliers.Ai.Mcp.Core
 ```
 
-## Features
+## 機能
 
-- .NET 10.0 support
-- Interface-driven design with `IAteliersMcpInfo`
-- Assembly metadata automation
-- Dependency injection ready
+- .NET 10.0 サポート
+- `IAteliersMcpInfo` によるインターフェース駆動設計
+- アセンブリメタデータの自動化
+- 依存性注入に対応
 
-## Ateliers AI MCP Ecosystem
+## Ateliers AI MCP エコシステム
 
-- **Core** (this package) - Base interfaces and utilities
-- **Services** - Service layer abstractions
-- **Tools** - MCP tool implementations
-- **Servers** - MCP server implementations
+- **Core** (このパッケージ) - 基本インターフェースとユーティリティ
+- **Services** - サービス層の抽象化
+- **Tools** - MCP ツール実装
+- **Servers** - MCP サーバー実装
 
-## Documentation
+## ドキュメント
 
-Visit **[ateliers.dev](https://ateliers.dev)** for full documentation, usage examples, and guides.
+完全なドキュメント、使用例、ガイドについては **[ateliers.dev](https://ateliers.dev)** をご覧ください。
 
-## Status
+## ステータス
 
-⚠️ **Development version (v0.x.x)** - API may change. Stable v1.0.0 coming soon.
+⚠️ **開発版 (v0.x.x)** - API は変更される可能性があります。安定版 v1.0.0 は近日リリース予定です。
 
-## License
+## ライセンス
 
-MIT License - see [LICENSE](LICENSE) file for details.
+MIT License - 詳細は [LICENSE](LICENSE) ファイルをご覧ください。
 
 ---
 

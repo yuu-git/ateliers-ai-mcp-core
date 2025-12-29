@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
@@ -6,12 +6,12 @@
     <LangVersion>latest</LangVersion>
 
     <!-- NuGet パッケージ情報 -->
-    <Version>0.1.1</Version>
+    <Version>0.2.0</Version>
     <PackageId>Ateliers.Ai.Mcp.Core</PackageId>
-    <Authors>yuu-git</Authors>
+    <Authors>ateliers</Authors>
     <Company>ateliers.dev</Company>
     <Product>Ateliers AI MCP</Product>
-    <Description>Core library for Ateliers AI Model Context Protocol (MCP) implementation</Description>
+    <Description>Ateliers MCP エコシステムのコア</Description>
     <PackageTags>mcp;ai;core;infrastructure</PackageTags>
     <PackageProjectUrl>https://github.com/yuu-git/ateliers-ai-mcp-core</PackageProjectUrl>
     <RepositoryUrl>https://github.com/yuu-git/ateliers-ai-mcp-core</RepositoryUrl>
@@ -20,9 +20,9 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
 
     <!-- Assembly情報の自動生成（追加） -->
-    <AssemblyVersion>0.1.1.0</AssemblyVersion>
-    <FileVersion>0.1.1.0</FileVersion>
-    <InformationalVersion>0.1.0</InformationalVersion>
+    <AssemblyVersion>0.2.0.0</AssemblyVersion>
+    <FileVersion>0.2.0.0</FileVersion>
+    <InformationalVersion>0.2.0</InformationalVersion>
 
     <!-- NuGet パッケージ設定 -->
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
@@ -32,7 +32,7 @@
 
   <!-- README を NuGet パッケージに含める -->
   <ItemGroup>
-    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+    <None Include=".\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <!-- 基本的な依存パッケージ -->
