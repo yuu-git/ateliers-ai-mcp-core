@@ -33,6 +33,132 @@ public class MyMcpService : IAteliersMcpInfo
 }
 ```
 
+---
+
+## ロガー使用方法
+
+Ateliers.Ai.Mcp.Core は、MCP ロギングポリシーに準拠したロギング機能を提供します。
+詳細は [MCP Logging Policy](/docs/LoggingPolicy.md) を参照してください。
+
+### 最小利用例（Core / Tool 側）
+```csharp
+var logger = new FileMcpLogger(new McpLoggerOptions
+{
+    MinimumLevel = McpLogLevel.Information
+});
+
+logger.Info("MCP.Start tool=notion.sync");
+
+try
+{
+    // 処理
+}
+catch (Exception ex)
+{
+    logger.Error("MCP.Failed", ex);
+    throw;
+}
+```
+
+### 使い方（即実戦）
+
+```csharp
+var options = new McpLoggerOptions
+{
+    MinimumLevel = McpLogLevel.Information,
+    LogDirectory = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+        "ateliers", "mcp", "logs"
+    )
+};
+
+IMcpLogger logger = new CompositeMcpLogger(new IMcpLogger[]
+{
+    new ConsoleMcpLogger(options),
+    new FileMcpLogger(options)
+});
+
+logger.Info("MCP.Start tool=notion.sync");
+```
+
+```csharp
+using var scope = new McpExecutionContextScope("notion.sync");
+
+logger.Info("MCP.Start");
+
+await RunAsync();
+
+logger.Info("MCP.Success");
+```
+
+### Production 利用例
+
+```csharp
+services.AddMcpLogging(logging =>
+{
+    logging
+        .SetMinimumLevel(McpLogLevel.Information)
+        .AddConsole()
+        .AddFile();
+});
+```
+
+### UnitTests 利用例
+
+```csharp
+var services = new ServiceCollection();
+
+InMemoryMcpLogger testLogger;
+
+services.AddMcpLogging(logging =>
+{
+    logging
+        .SetMinimumLevel(McpLogLevel.Debug)
+        .AddInMemory(out testLogger);
+});
+
+var provider = services.BuildServiceProvider();
+
+var logger = provider.GetRequiredService<IMcpLogger>();
+
+logger.Info("Test message");
+
+Assert.Single(testLogger.Entries);
+Assert.Equal("Test message", testLogger.Entries[0].Message);
+```
+
+#### CompositeMcpLogger
+
+複数のロガーを組み合わせて使用します。
+
+✔ ロガー同士を独立させている
+- File が死んでも Console は生きる
+- 将来 Serilog を足しても既存コード不変
+
+✔ 例外を握りつぶす理由
+- MCP は「ログが目的のプロセス」ではない
+- ログ失敗で Tool 実行が止まるのは最悪
+
+### Log Retention
+
+MCP はログファイルを無制限に保持しません。
+
+ログは起動時に自動的にクリーンアップされ、以下の保持期間を超えたファイルは削除されます。
+
+| Category | Retention |
+|--------|-----------|
+| Trace  | 1–3 days |
+| Debug  | 3–7 days |
+| Info   | 14 days |
+| Error  | 90 days |
+
+Retention 処理は MCP 起動時に一度だけ実行されます。
+
+Retention 判定にはファイルの LastWriteTime (UTC) を使用します。
+これはタイムゾーンや夏時間の影響を避けるためです。
+
+---
+
 ## Ateliers AI MCP エコシステム
 
 このパッケージは Ateliers AI MCP エコシステムの一部です：
