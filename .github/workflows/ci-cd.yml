@@ -16,7 +16,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/dotnet/sdk:10.0
+      image: mcr.microsoft.com/dotnet/sdk:10.0-alpine
       env:
         LANG: ja-JP.UTF-8
         LC_ALL: ja-JP.UTF-8
