@@ -18,8 +18,9 @@ jobs:
     container:
       image: mcr.microsoft.com/dotnet/sdk:10.0-alpine
       env:
-        LANG: C.UTF-8
-        LC_ALL: C.UTF-8
+        LANG: ja-JP.UTF-8
+        LC_ALL: ja-JP.UTF-8
+        DOTNET_SYS_GLOBALIZATION_INVARIANT: 'false'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
