@@ -26,7 +26,8 @@ public class ConsoleMcpLoggerTests : IDisposable
         return _consoleOutput.ToString();
     }
 
-    [Fact(DisplayName = @"最小レベル以上のログエントリがコンソールに出力されること")]
+    [Fact]
+    [Trait("説明", @"最小レベル以上のログエントリがコンソールに出力されること")]
     public void Log_ShouldWriteToConsoleWhenLevelIsAboveMinimum()
     {
         // Arrange
@@ -47,7 +48,8 @@ public class ConsoleMcpLoggerTests : IDisposable
         Assert.Contains("[Information]", output);
     }
 
-    [Fact(DisplayName = @"最小レベル未満のログエントリがコンソールに出力されないこと")]
+    [Fact]
+    [Trait("説明", @"最小レベル未満のログエントリがコンソールに出力されないこと")]
     public void Log_ShouldNotWriteToConsoleWhenLevelIsBelowMinimum()
     {
         // Arrange
@@ -67,7 +69,8 @@ public class ConsoleMcpLoggerTests : IDisposable
         Assert.DoesNotContain("Debug message", output);
     }
 
-    [Fact(DisplayName = @"Info メソッドで情報レベルのログがコンソールに出力されること")]
+    [Fact]
+    [Trait("説明", @"Info メソッドで情報レベルのログがコンソールに出力されること")]
     public void Info_ShouldLogInformationLevel()
     {
         // Arrange
@@ -83,7 +86,8 @@ public class ConsoleMcpLoggerTests : IDisposable
         Assert.Contains("[Information]", output);
     }
 
-    [Fact(DisplayName = @"Warn メソッドで警告レベルのログがコンソールに出力されること")]
+    [Fact]
+    [Trait("説明", @"Warn メソッドで警告レベルのログがコンソールに出力されること")]
     public void Warn_ShouldLogWarningLevel()
     {
         // Arrange
@@ -99,7 +103,8 @@ public class ConsoleMcpLoggerTests : IDisposable
         Assert.Contains("[Warning]", output);
     }
 
-    [Fact(DisplayName = @"Error メソッドでエラーレベルのログと例外がコンソールに出力されること")]
+    [Fact]
+    [Trait("説明", @"Error メソッドでエラーレベルのログと例外がコンソールに出力されること")]
     public void Error_ShouldLogErrorLevel()
     {
         // Arrange
@@ -117,7 +122,8 @@ public class ConsoleMcpLoggerTests : IDisposable
         Assert.Contains("Test exception", output);
     }
 
-    [Fact(DisplayName = @"Critical メソッドで重大レベルのログと例外がコンソールに出力されること")]
+    [Fact]
+    [Trait("説明", @"Critical メソッドで重大レベルのログと例外がコンソールに出力されること")]
     public void Critical_ShouldLogCriticalLevel()
     {
         // Arrange
@@ -135,7 +141,8 @@ public class ConsoleMcpLoggerTests : IDisposable
         Assert.Contains("Critical exception", output);
     }
 
-    [Fact(DisplayName = @"複数のログ呼び出しでコンソール出力が蓄積されること")]
+    [Fact]
+    [Trait("説明", @"複数のログ呼び出しでコンソール出力が蓄積されること")]
     public void MultipleLogCalls_ShouldAccumulateConsoleOutput()
     {
         // Arrange
@@ -154,7 +161,8 @@ public class ConsoleMcpLoggerTests : IDisposable
         Assert.Contains("Message 3", output);
     }
 
-    [Fact(DisplayName = @"タイムスタンプがHH:mm:ssフォーマットで出力されること")]
+    [Fact]
+    [Trait("説明", @"タイムスタンプがHH:mm:ssフォーマットで出力されること")]
     public void Log_ShouldFormatTimestampCorrectly()
     {
         // Arrange
@@ -176,7 +184,8 @@ public class ConsoleMcpLoggerTests : IDisposable
         Assert.Contains("[14:30:45]", output);
     }
 
-    [Fact(DisplayName = @"例外がない場合、例外情報が出力されないこと")]
+    [Fact]
+    [Trait("説明", @"例外がない場合、例外情報が出力されないこと")]
     public void Log_ShouldNotWriteExceptionWhenNull()
     {
         // Arrange

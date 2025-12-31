@@ -4,8 +4,8 @@ namespace Ateliers.Ai.Mcp.Core.UnitTests.Logging;
 
 public class CompositeMcpLoggerTests
 {
-    [Fact(DisplayName = "Log_ShouldForwardToAllLoggers")]
-    [Trait("説明", "複数のロガーにログが転送されること")]
+    [Fact]
+    [Trait("説明", @"複数のロガーにログが転送されること")]
     public void Log_ShouldForwardToAllLoggers()
     {
         // Arrange
@@ -29,8 +29,8 @@ public class CompositeMcpLoggerTests
         Assert.Equal("Test message", logger2.Entries[0].Message);
     }
 
-    [Fact(DisplayName = "Info_ShouldLogToAllLoggers")]
-    [Trait("説明", "Info メソッドで全てのロガーに情報レベルのログが記録されること")]
+    [Fact]
+    [Trait("説明", @"Info メソッドで全てのロガーに情報レベルのログが記録されること")]
     public void Info_ShouldLogToAllLoggers()
     {
         // Arrange
@@ -51,8 +51,8 @@ public class CompositeMcpLoggerTests
         Assert.Equal("Info message", logger2.Entries[0].Message);
     }
 
-    [Fact(DisplayName = "Warn_ShouldLogToAllLoggers")]
-    [Trait("説明", "Warn メソッドで全てのロガーに警告レベルのログが記録されること")]
+    [Fact]
+    [Trait("説明", @"Warn メソッドで全てのロガーに警告レベルのログが記録されること")]
     public void Warn_ShouldLogToAllLoggers()
     {
         // Arrange
@@ -71,8 +71,8 @@ public class CompositeMcpLoggerTests
         Assert.Equal(McpLogLevel.Warning, logger2.Entries[0].Level);
     }
 
-    [Fact(DisplayName = "Error_ShouldLogToAllLoggers")]
-    [Trait("説明", "Error メソッドで全てのロガーにエラーレベルのログが記録されること")]
+    [Fact]
+    [Trait("説明", @"Error メソッドで全てのロガーにエラーレベルのログが記録されること")]
     public void Error_ShouldLogToAllLoggers()
     {
         // Arrange
@@ -93,8 +93,8 @@ public class CompositeMcpLoggerTests
         Assert.Equal(exception, logger2.Entries[0].Exception);
     }
 
-    [Fact(DisplayName = "Critical_ShouldLogToAllLoggers")]
-    [Trait("説明", "Critical メソッドで全てのロガーに重大レベルのログが記録されること")]
+    [Fact]
+    [Trait("説明", @"Critical メソッドで全てのロガーに重大レベルのログが記録されること")]
     public void Critical_ShouldLogToAllLoggers()
     {
         // Arrange
@@ -114,8 +114,8 @@ public class CompositeMcpLoggerTests
         Assert.Equal(exception, logger1.Entries[0].Exception);
     }
 
-    [Fact(DisplayName = "MultipleLogCalls_ShouldAccumulateEntriesInAllLoggers")]
-    [Trait("説明", "複数のログ呼び出しで全てのロガーにエントリが蓄積されること")]
+    [Fact]
+    [Trait("説明", @"複数のログ呼び出しで全てのロガーにエントリが蓄積されること")]
     public void MultipleLogCalls_ShouldAccumulateEntriesInAllLoggers()
     {
         // Arrange
@@ -137,16 +137,16 @@ public class CompositeMcpLoggerTests
         Assert.Equal("Message 3", logger1.Entries[2].Message);
     }
 
-    [Fact(DisplayName = "Constructor_ShouldThrowWhenLoggersIsNull")]
-    [Trait("説明", "ロガーコレクションがnullの場合、例外がスローされること")]
+    [Fact]
+    [Trait("説明", @"ロガーコレクションがnullの場合、例外がスローされること")]
     public void Constructor_ShouldThrowWhenLoggersIsNull()
     {
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => new CompositeMcpLogger(null!));
     }
 
-    [Fact(DisplayName = "Constructor_ShouldNotThrowWhenLoggersIsEmpty")]
-    [Trait("説明", "空のロガーコレクションでも例外がスローされないこと")]
+    [Fact]
+    [Trait("説明", @"空のロガーコレクションでも例外がスローされないこと")]
     public void Constructor_ShouldNotThrowWhenLoggersIsEmpty()
     {
         // Arrange & Act
@@ -156,8 +156,8 @@ public class CompositeMcpLoggerTests
         Assert.NotNull(compositeLogger);
     }
 
-    [Fact(DisplayName = "Log_ShouldNotThrowWhenNoLoggers")]
-    [Trait("説明", "空のロガーコレクションでログが呼び出されても例外がスローされないこと")]
+    [Fact]
+    [Trait("説明", @"空のロガーコレクションでログが呼び出されても例外がスローされないこと")]
     public void Log_ShouldNotThrowWhenNoLoggers()
     {
         // Arrange
@@ -172,8 +172,8 @@ public class CompositeMcpLoggerTests
         compositeLogger.Log(entry);
     }
 
-    [Fact(DisplayName = "Log_ShouldContinueWhenOneLoggerThrows")]
-    [Trait("説明", "一つのロガーが例外をスローしても他のロガーにログが記録されること")]
+    [Fact]
+    [Trait("説明", @"一つのロガーが例外をスローしても他のロガーにログが記録されること")]
     public void Log_ShouldContinueWhenOneLoggerThrows()
     {
         // Arrange
@@ -195,8 +195,8 @@ public class CompositeMcpLoggerTests
         Assert.Equal("Test message", validLogger.Entries[0].Message);
     }
 
-    [Fact(DisplayName = "Log_ShouldWorkWithDifferentLoggerTypes")]
-    [Trait("説明", "異なる種類のロガーを組み合わせることができること")]
+    [Fact]
+    [Trait("説明", @"異なる種類のロガーを組み合わせることができること")]
     public void Log_ShouldWorkWithDifferentLoggerTypes()
     {
         // Arrange
