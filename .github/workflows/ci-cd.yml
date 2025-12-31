@@ -95,10 +95,6 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Get version from tag
-        id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-
       - name: Restore dependencies
         run: dotnet restore src/Ateliers.Ai.Mcp.Core/Ateliers.Ai.Mcp.Core.csproj
 
@@ -106,7 +102,7 @@ jobs:
         run: dotnet build src/Ateliers.Ai.Mcp.Core/Ateliers.Ai.Mcp.Core.csproj --configuration ${{ env.CONFIGURATION }} --no-restore
 
       - name: Pack
-        run: dotnet pack src/Ateliers.Ai.Mcp.Core/Ateliers.Ai.Mcp.Core.csproj --configuration ${{ env.CONFIGURATION }} --no-build --output ./packages /p:PackageVersion=${{ steps.get_version.outputs.VERSION }}
+        run: dotnet pack src/Ateliers.Ai.Mcp.Core/Ateliers.Ai.Mcp.Core.csproj --configuration ${{ env.CONFIGURATION }} --no-build --output ./packages
 
       - name: Publish to NuGet.org
         run: dotnet nuget push ./packages/*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }} --skip-duplicate
@@ -117,6 +113,6 @@ jobs:
           files: ./packages/*.*nupkg
           generate_release_notes: true
           draft: false
-          prerelease: ${{ contains(steps.get_version.outputs.VERSION, '-') }}
+          prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

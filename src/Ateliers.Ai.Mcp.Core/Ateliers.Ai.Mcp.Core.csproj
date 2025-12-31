@@ -6,7 +6,7 @@
     <LangVersion>latest</LangVersion>
 
     <!-- NuGet パッケージ情報 -->
-    <Version>0.2.1</Version>
+    <Version>0.2.2</Version>
     <PackageId>Ateliers.Ai.Mcp.Core</PackageId>
     <Authors>ateliers</Authors>
     <Company>ateliers.dev</Company>
@@ -20,9 +20,9 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
 
     <!-- Assembly情報の自動生成（追加） -->
-    <AssemblyVersion>0.2.1.0</AssemblyVersion>
-    <FileVersion>0.2.1.0</FileVersion>
-    <InformationalVersion>0.2.1</InformationalVersion>
+    <AssemblyVersion>0.2.2.0</AssemblyVersion>
+    <FileVersion>0.2.2.0</FileVersion>
+    <InformationalVersion>0.2.2</InformationalVersion>
 
     <!-- NuGet パッケージ設定 -->
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
