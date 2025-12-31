@@ -1,12 +1,15 @@
-﻿namespace Ateliers.Ai.Mcp.Logging;
+﻿using System.Collections.Concurrent;
+
+namespace Ateliers.Ai.Mcp.Logging;
 
 /// <summary>
-/// インメモリ MCP ロガーを表します。
+/// メモリログを管理する MCP ロガー
 /// </summary>
-public sealed class InMemoryMcpLogger : IMcpLogger
+public sealed class InMemoryMcpLogger : IMcpLogger, IMcpLogReader
 {
     private readonly McpLoggerOptions _options;
     private readonly List<McpLogEntry> _entries = new();
+    private readonly ConcurrentDictionary<string, List<McpLogEntry>> _logs = new();
 
     /// <summary>
     /// ログ エントリの読み取り専用リストを取得します。
@@ -14,9 +17,9 @@ public sealed class InMemoryMcpLogger : IMcpLogger
     public IReadOnlyList<McpLogEntry> Entries => _entries;
 
     /// <summary>
-    /// インメモリ MCP ロガー の新しいインスタンスを初期化します。
+    /// メモリロガー の新しいインスタンスを初期化します。
     /// </summary>
-    /// <param name="options"></param>
+    /// <param name="options"> ロガーのオプション </param>
     public InMemoryMcpLogger(McpLoggerOptions options)
     {
         _options = options;
@@ -25,7 +28,7 @@ public sealed class InMemoryMcpLogger : IMcpLogger
     /// <summary>
     /// ログ エントリを記録します。
     /// </summary>
-    /// <param name="entry"> ログ エントリ。</param>
+    /// <param name="entry"> ログ エントリ </param>
     public void Log(McpLogEntry entry)
     {
         if (entry.Level < _options.MinimumLevel)
@@ -53,4 +56,59 @@ public sealed class InMemoryMcpLogger : IMcpLogger
     /// <inheritdoc/>
     public void Critical(string message, Exception? ex = null)
         => Log(McpLogEntryFactory.Create(McpLogLevel.Critical, message, ex));
+
+    /// <inheritdoc/>
+    public McpLogSession ReadByCorrelationId(string correlationId)
+    {
+        if (!_logs.TryGetValue(correlationId, out var entries))
+        {
+            return new McpLogSession
+            {
+                CorrelationId = correlationId,
+                Entries = Array.Empty<McpLogEntry>()
+            };
+        }
+
+        lock (entries)
+        {
+            return new McpLogSession
+            {
+                CorrelationId = correlationId,
+                Entries = entries
+                    .OrderBy(e => e.Timestamp)
+                    .ToList()
+            };
+        }
+    }
+
+    /// <summary>
+    /// 指定された相関 ID に対してログ エントリを追加します。
+    /// </summary>
+    internal void Append(string correlationId, McpLogEntry entry)
+    {
+        var list = _logs.GetOrAdd(
+            correlationId,
+            _ => new List<McpLogEntry>());
+
+        lock (list)
+        {
+            list.Add(entry);
+        }
+    }
+
+    /// <summary>
+    /// 指定された相関 ID のログをクリアします。
+    /// </summary>
+    internal void Clear(string correlationId)
+    {
+        _logs.TryRemove(correlationId, out _);
+    }
+
+    /// <summary>
+    /// すべてのログをクリアします。
+    /// </summary>
+    internal void ClearAll()
+    {
+        _logs.Clear();
+    }
 }

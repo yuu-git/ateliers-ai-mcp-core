@@ -1,11 +1,12 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 
 namespace Ateliers.Ai.Mcp.Logging;
 
 /// <summary>
-/// ファイルにログを出力する MCP ロガーを表します。
+/// ファイルログを管理する MCP ロガー
 /// </summary>
-public sealed class FileMcpLogger : IMcpLogger
+public sealed class FileMcpLogger : IMcpLogger, IMcpLogReader
 {
     private readonly string _logDir;
     private readonly McpLoggerOptions _options;
@@ -63,4 +64,107 @@ public sealed class FileMcpLogger : IMcpLogger
 
     /// <inheritdoc/>
     public void Critical(string message, Exception? ex = null) => Log(new() { Level = McpLogLevel.Critical, Message = message, Exception = ex });
+
+    /// <inheritdoc/>
+    public McpLogSession ReadByCorrelationId(string correlationId)
+    {
+        if (!Directory.Exists(_logDir))
+        {
+            return Empty(correlationId);
+        }
+
+        var entries = new List<McpLogEntry>();
+
+        foreach (var file in Directory.EnumerateFiles(_logDir, "*.log"))
+        {
+            foreach (var line in File.ReadLines(file))
+            {
+                if (!line.Contains(correlationId, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                var entry = TryParse(line);
+                if (entry != null)
+                {
+                    entries.Add(entry);
+                }
+            }
+        }
+
+        return new McpLogSession
+        {
+            CorrelationId = correlationId,
+            Entries = entries
+                .OrderBy(e => e.Timestamp)
+                .ToList()
+        };
+    }
+
+    private static McpLogSession Empty(string correlationId)
+        => new()
+        {
+            CorrelationId = correlationId,
+            Entries = Array.Empty<McpLogEntry>()
+        };
+
+    /// <summary>
+    /// 超ゆるいパーサ。
+    /// フォーマットが変わっても壊れないことを最優先。
+    /// </summary>
+    private static McpLogEntry? TryParse(string line)
+    {
+        // 例想定:
+        // 2025-01-01T12:34:56.789Z [INFO] message...
+        // フォーマットが違っても message として拾う
+
+        try
+        {
+            var timestampEnd = line.IndexOf(' ');
+            if (timestampEnd <= 0)
+            {
+                return Fallback(line);
+            }
+
+            var timestampText = line[..timestampEnd];
+            if (!DateTimeOffset.TryParse(
+                    timestampText,
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.AssumeUniversal,
+                    out var timestamp))
+            {
+                return Fallback(line);
+            }
+
+            return new McpLogEntry
+            {
+                Timestamp = timestamp,
+                Level = ExtractLevel(line),
+                Message = line
+            };
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static McpLogEntry Fallback(string line)
+        => new()
+        {
+            Timestamp = DateTimeOffset.MinValue,
+            Level = McpLogLevel.UNKNOWN,
+            Message = line
+        };
+
+    private static McpLogLevel ExtractLevel(string line)
+    {
+        if (line.Contains("[TRACE]")) return McpLogLevel.Trace;
+        if (line.Contains("[DEBUG]")) return McpLogLevel.Debug;
+
+        if (line.Contains("[INFO]")) return McpLogLevel.Information;
+        if (line.Contains("[WARN]")) return McpLogLevel.Warning;
+        if (line.Contains("[ERROR]")) return McpLogLevel.Error;
+        if (line.Contains("[FATAL]")) return McpLogLevel.Critical;
+
+        return McpLogLevel.UNKNOWN;
+    }
 }

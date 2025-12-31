@@ -159,6 +159,31 @@ Retention 判定にはファイルの LastWriteTime (UTC) を使用します。
 
 ---
 
+## McpLogReader
+
+MCP ログファイルを読み取るためのユーティリティクラスです。
+
+### DI 登録（例）
+
+FileMcpLogReader を DI コンテナに登録する例：
+
+```csharp
+services.AddSingleton<IMcpLogReader>(
+    _ => new FileMcpLogReader(
+        Path.Combine(AppContext.BaseDirectory, "logs")
+    ));
+```
+
+InMemory を使う場合:
+
+```csharp
+services.AddSingleton<InMemoryMcpLogReader>();
+services.AddSingleton<IMcpLogReader>(
+    sp => sp.GetRequiredService<InMemoryMcpLogReader>());
+```
+
+---
+
 ## Ateliers AI MCP エコシステム
 
 このパッケージは Ateliers AI MCP エコシステムの一部です：

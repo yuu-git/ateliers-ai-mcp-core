@@ -5,6 +5,8 @@
 /// </summary>
 public enum McpLogLevel
 {
+    /// <summary> 不明なログレベル </summary>
+    UNKNOWN,
     /// <summary>トレースログ </summary>
     Trace,
     /// <summary> デバッグログ </summary>
