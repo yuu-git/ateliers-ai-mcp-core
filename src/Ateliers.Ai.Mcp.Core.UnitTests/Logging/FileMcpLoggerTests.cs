@@ -20,7 +20,7 @@ public class FileMcpLoggerTests : IDisposable
         }
     }
 
-    [Fact(DisplayName = "ログファイルが作成されること")]
+    [Fact(DisplayName = @"ログファイルが作成されること")]
     public void Log_ShouldCreateLogFile()
     {
         // Arrange
@@ -40,7 +40,7 @@ public class FileMcpLoggerTests : IDisposable
         Assert.Single(logFiles);
     }
 
-    [Fact(DisplayName = "最小レベル以上のログエントリが記録されること")]
+    [Fact(DisplayName = @"最小レベル以上のログエントリが記録されること")]
     public void Log_ShouldAddEntryWhenLevelIsAboveMinimum()
     {
         // Arrange
@@ -62,7 +62,7 @@ public class FileMcpLoggerTests : IDisposable
         Assert.Contains("[Information]", content);
     }
 
-    [Fact(DisplayName = "最小レベル未満のログエントリが記録されないこと")]
+    [Fact(DisplayName = @"最小レベル未満のログエントリが記録されないこと")]
     public void Log_ShouldNotAddEntryWhenLevelIsBelowMinimum()
     {
         // Arrange
@@ -86,7 +86,7 @@ public class FileMcpLoggerTests : IDisposable
         }
     }
 
-    [Fact(DisplayName = "Info メソッドで情報レベルのログが記録されること")]
+    [Fact(DisplayName = @"Info メソッドで情報レベルのログが記録されること")]
     public void Info_ShouldLogInformationLevel()
     {
         // Arrange
@@ -103,7 +103,7 @@ public class FileMcpLoggerTests : IDisposable
         Assert.Contains("[Information]", content);
     }
 
-    [Fact(DisplayName = "Warn メソッドで警告レベルのログが記録されること")]
+    [Fact(DisplayName = @"Warn メソッドで警告レベルのログが記録されること")]
     public void Warn_ShouldLogWarningLevel()
     {
         // Arrange
@@ -120,7 +120,7 @@ public class FileMcpLoggerTests : IDisposable
         Assert.Contains("[Warning]", content);
     }
 
-    [Fact(DisplayName = "Error メソッドでエラーレベルのログと例外が記録されること")]
+    [Fact(DisplayName = @"Error メソッドでエラーレベルのログと例外が記録されること")]
     public void Error_ShouldLogErrorLevel()
     {
         // Arrange
@@ -139,7 +139,7 @@ public class FileMcpLoggerTests : IDisposable
         Assert.Contains("Test exception", content);
     }
 
-    [Fact(DisplayName = "Critical メソッドで重大レベルのログと例外が記録されること")]
+    [Fact(DisplayName = @"Critical メソッドで重大レベルのログと例外が記録されること")]
     public void Critical_ShouldLogCriticalLevel()
     {
         // Arrange
@@ -158,7 +158,7 @@ public class FileMcpLoggerTests : IDisposable
         Assert.Contains("Critical exception", content);
     }
 
-    [Fact(DisplayName = "複数のログ呼び出しでエントリが蓄積されること")]
+    [Fact(DisplayName = @"複数のログ呼び出しでエントリが蓄積されること")]
     public void MultipleLogCalls_ShouldAccumulateEntries()
     {
         // Arrange
@@ -178,7 +178,7 @@ public class FileMcpLoggerTests : IDisposable
         Assert.Contains("Message 3", content);
     }
 
-    [Fact(DisplayName = "ログファイル名が日付フォーマットであること")]
+    [Fact(DisplayName = @"ログファイル名が日付フォーマットであること")]
     public void LogFileName_ShouldContainDate()
     {
         // Arrange
@@ -195,7 +195,7 @@ public class FileMcpLoggerTests : IDisposable
         Assert.Equal(expectedPattern, fileName);
     }
 
-    [Fact(DisplayName = "存在しない相関IDで検索した場合、空のセッションが返されること")]
+    [Fact(DisplayName = @"存在しない相関IDで検索した場合、空のセッションが返されること")]
     public void ReadByCorrelationId_ShouldReturnEmptySessionWhenCorrelationIdNotFound()
     {
         // Arrange
@@ -210,7 +210,7 @@ public class FileMcpLoggerTests : IDisposable
         Assert.Empty(session.Entries);
     }
 
-    [Fact(DisplayName = "存在しないログディレクトリで検索した場合、空のセッションが返されること")]
+    [Fact(DisplayName = @"存在しないログディレクトリで検索した場合、空のセッションが返されること")]
     public void ReadByCorrelationId_ShouldReturnEmptySessionWhenDirectoryNotExists()
     {
         // Arrange
@@ -226,7 +226,7 @@ public class FileMcpLoggerTests : IDisposable
         Assert.Empty(session.Entries);
     }
 
-    [Fact(DisplayName = "ログディレクトリが指定されていない場合、デフォルトディレクトリが使用されること")]
+    [Fact(DisplayName = @"ログディレクトリが指定されていない場合、デフォルトディレクトリが使用されること")]
     public void Constructor_ShouldUseDefaultDirectoryWhenNotSpecified()
     {
         // Arrange & Act

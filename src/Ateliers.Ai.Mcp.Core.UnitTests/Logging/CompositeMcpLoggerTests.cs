@@ -4,7 +4,7 @@ namespace Ateliers.Ai.Mcp.Core.UnitTests.Logging;
 
 public class CompositeMcpLoggerTests
 {
-    [Fact(DisplayName = "複数のロガーにログが転送されること")]
+    [Fact(DisplayName = @"複数のロガーにログが転送されること")]
     public void Log_ShouldForwardToAllLoggers()
     {
         // Arrange
@@ -28,7 +28,7 @@ public class CompositeMcpLoggerTests
         Assert.Equal("Test message", logger2.Entries[0].Message);
     }
 
-    [Fact(DisplayName = "Info メソッドで全てのロガーに情報レベルのログが記録されること")]
+    [Fact(DisplayName = @"Info メソッドで全てのロガーに情報レベルのログが記録されること")]
     public void Info_ShouldLogToAllLoggers()
     {
         // Arrange
@@ -49,7 +49,7 @@ public class CompositeMcpLoggerTests
         Assert.Equal("Info message", logger2.Entries[0].Message);
     }
 
-    [Fact(DisplayName = "Warn メソッドで全てのロガーに警告レベルのログが記録されること")]
+    [Fact(DisplayName = @"Warn メソッドで全てのロガーに警告レベルのログが記録されること")]
     public void Warn_ShouldLogToAllLoggers()
     {
         // Arrange
@@ -68,7 +68,7 @@ public class CompositeMcpLoggerTests
         Assert.Equal(McpLogLevel.Warning, logger2.Entries[0].Level);
     }
 
-    [Fact(DisplayName = "Error メソッドで全てのロガーにエラーレベルのログが記録されること")]
+    [Fact(DisplayName = @"Error メソッドで全てのロガーにエラーレベルのログが記録されること")]
     public void Error_ShouldLogToAllLoggers()
     {
         // Arrange
@@ -89,7 +89,7 @@ public class CompositeMcpLoggerTests
         Assert.Equal(exception, logger2.Entries[0].Exception);
     }
 
-    [Fact(DisplayName = "Critical メソッドで全てのロガーに重大レベルのログが記録されること")]
+    [Fact(DisplayName = @"Critical メソッドで全てのロガーに重大レベルのログが記録されること")]
     public void Critical_ShouldLogToAllLoggers()
     {
         // Arrange
@@ -109,7 +109,7 @@ public class CompositeMcpLoggerTests
         Assert.Equal(exception, logger1.Entries[0].Exception);
     }
 
-    [Fact(DisplayName = "複数のログ呼び出しで全てのロガーにエントリが蓄積されること")]
+    [Fact(DisplayName = @"複数のログ呼び出しで全てのロガーにエントリが蓄積されること")]
     public void MultipleLogCalls_ShouldAccumulateEntriesInAllLoggers()
     {
         // Arrange
@@ -131,14 +131,14 @@ public class CompositeMcpLoggerTests
         Assert.Equal("Message 3", logger1.Entries[2].Message);
     }
 
-    [Fact(DisplayName = "ロガーコレクションがnullの場合、例外がスローされること")]
+    [Fact(DisplayName = @"ロガーコレクションがnullの場合、例外がスローされること")]
     public void Constructor_ShouldThrowWhenLoggersIsNull()
     {
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => new CompositeMcpLogger(null!));
     }
 
-    [Fact(DisplayName = "空のロガーコレクションでも例外がスローされないこと")]
+    [Fact(DisplayName = @"空のロガーコレクションでも例外がスローされないこと")]
     public void Constructor_ShouldNotThrowWhenLoggersIsEmpty()
     {
         // Arrange & Act
@@ -148,7 +148,7 @@ public class CompositeMcpLoggerTests
         Assert.NotNull(compositeLogger);
     }
 
-    [Fact(DisplayName = "空のロガーコレクションでログが呼び出されても例外がスローされないこと")]
+    [Fact(DisplayName = @"空のロガーコレクションでログが呼び出されても例外がスローされないこと")]
     public void Log_ShouldNotThrowWhenNoLoggers()
     {
         // Arrange
@@ -163,7 +163,7 @@ public class CompositeMcpLoggerTests
         compositeLogger.Log(entry);
     }
 
-    [Fact(DisplayName = "一つのロガーが例外をスローしても他のロガーにログが記録されること")]
+    [Fact(DisplayName = @"一つのロガーが例外をスローしても他のロガーにログが記録されること")]
     public void Log_ShouldContinueWhenOneLoggerThrows()
     {
         // Arrange
@@ -185,7 +185,7 @@ public class CompositeMcpLoggerTests
         Assert.Equal("Test message", validLogger.Entries[0].Message);
     }
 
-    [Fact(DisplayName = "異なる種類のロガーを組み合わせることができること")]
+    [Fact(DisplayName = @"異なる種類のロガーを組み合わせることができること")]
     public void Log_ShouldWorkWithDifferentLoggerTypes()
     {
         // Arrange

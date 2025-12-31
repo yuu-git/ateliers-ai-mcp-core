@@ -4,7 +4,7 @@ namespace Ateliers.Ai.Mcp.Core.UnitTests.Logging;
 
 public class InMemoryMcpLoggerTests
 {
-    [Fact(DisplayName = "最小レベル以上のログエントリが記録されること")]
+    [Fact(DisplayName = @"最小レベル以上のログエントリが記録されること")]
     public void Log_ShouldAddEntryWhenLevelIsAboveMinimum()
     {
         // Arrange
@@ -25,7 +25,7 @@ public class InMemoryMcpLoggerTests
         Assert.Equal(McpLogLevel.Information, logger.Entries[0].Level);
     }
 
-    [Fact(DisplayName = "最小レベル未満のログエントリが記録されないこと")]
+    [Fact(DisplayName = @"最小レベル未満のログエントリが記録されないこと")]
     public void Log_ShouldNotAddEntryWhenLevelIsBelowMinimum()
     {
         // Arrange
@@ -44,7 +44,7 @@ public class InMemoryMcpLoggerTests
         Assert.Empty(logger.Entries);
     }
 
-    [Fact(DisplayName = "Info メソッドで情報レベルのログが記録されること")]
+    [Fact(DisplayName = @"Info メソッドで情報レベルのログが記録されること")]
     public void Info_ShouldLogInformationLevel()
     {
         // Arrange
@@ -60,7 +60,7 @@ public class InMemoryMcpLoggerTests
         Assert.Equal("Info message", logger.Entries[0].Message);
     }
 
-    [Fact(DisplayName = "Warn メソッドで警告レベルのログが記録されること")]
+    [Fact(DisplayName = @"Warn メソッドで警告レベルのログが記録されること")]
     public void Warn_ShouldLogWarningLevel()
     {
         // Arrange
@@ -76,7 +76,7 @@ public class InMemoryMcpLoggerTests
         Assert.Equal("Warning message", logger.Entries[0].Message);
     }
 
-    [Fact(DisplayName = "Error メソッドでエラーレベルのログと例外が記録されること")]
+    [Fact(DisplayName = @"Error メソッドでエラーレベルのログと例外が記録されること")]
     public void Error_ShouldLogErrorLevel()
     {
         // Arrange
@@ -94,7 +94,7 @@ public class InMemoryMcpLoggerTests
         Assert.Equal(exception, logger.Entries[0].Exception);
     }
 
-    [Fact(DisplayName = "Critical メソッドで重大レベルのログと例外が記録されること")]
+    [Fact(DisplayName = @"Critical メソッドで重大レベルのログと例外が記録されること")]
     public void Critical_ShouldLogCriticalLevel()
     {
         // Arrange
@@ -112,7 +112,7 @@ public class InMemoryMcpLoggerTests
         Assert.Equal(exception, logger.Entries[0].Exception);
     }
 
-    [Fact(DisplayName = "存在しない相関IDで検索した場合、空のセッションが返されること")]
+    [Fact(DisplayName = @"存在しない相関IDで検索した場合、空のセッションが返されること")]
     public void ReadByCorrelationId_ShouldReturnEmptySessionWhenCorrelationIdNotFound()
     {
         // Arrange
@@ -127,7 +127,7 @@ public class InMemoryMcpLoggerTests
         Assert.Empty(session.Entries);
     }
 
-    [Fact(DisplayName = "複数のログ呼び出しでエントリが蓄積されること")]
+    [Fact(DisplayName = @"複数のログ呼び出しでエントリが蓄積されること")]
     public void MultipleLogCalls_ShouldAccumulateEntries()
     {
         // Arrange
@@ -146,7 +146,7 @@ public class InMemoryMcpLoggerTests
         Assert.Equal("Message 3", logger.Entries[2].Message);
     }
 
-    [Fact(DisplayName = "Entries プロパティが読み取り専用であること")]
+    [Fact(DisplayName = @"Entries プロパティが読み取り専用であること")]
     public void Entries_ShouldBeReadOnly()
     {
         // Arrange
