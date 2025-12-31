@@ -16,19 +16,19 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/dotnet/sdk:10.0-alpine
+      image: mcr.microsoft.com/dotnet/sdk:10.0
       env:
         LANG: ja-JP.UTF-8
         LC_ALL: ja-JP.UTF-8
         DOTNET_SYS_GLOBALIZATION_INVARIANT: 'false'
+        DOTNET_CLI_UI_LANGUAGE: ja
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup locale
+      - name: Setup locale and ICU
         run: |
-          apk add --no-cache musl-locales musl-locales-lang
-          export MUSL_LOCPATH=/usr/share/i18n/locales/musl
+          apk add --no-cache icu-libs icu-data-full
 
       - name: Restore dependencies
         run: dotnet restore
