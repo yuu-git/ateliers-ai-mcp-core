@@ -16,7 +16,7 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     container:
-      image: mcr.microsoft.com/dotnet/sdk:10.0
+      image: mcr.microsoft.com/dotnet/sdk:10.0-alpine
       env:
         LANG: ja_JP.UTF-8
         LC_ALL: ja_JP.UTF-8
@@ -27,10 +27,8 @@ jobs:
 
       - name: Setup locale
         run: |
-          apt-get update
-          apt-get install -y locales
-          locale-gen ja_JP.UTF-8
-          update-locale LANG=ja_JP.UTF-8
+          apk add --no-cache musl-locales musl-locales-lang
+          export MUSL_LOCPATH=/usr/share/i18n/locales/musl
 
       - name: Restore dependencies
         run: dotnet restore
