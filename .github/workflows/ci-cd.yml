@@ -18,6 +18,11 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
     
+    permissions:
+      contents: read
+      checks: write  # test-reporter 用
+      pull-requests: write  # PR へのコメント用
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -60,7 +65,7 @@ jobs:
         uses: dorny/test-reporter@v1
         with:
           name: Test Results
-          path: '**/test-results.trx'
+          path: '**/TestResults/**/test-results.trx'
           reporter: dotnet-trx
           fail-on-error: true
 
@@ -68,7 +73,7 @@ jobs:
         if: success()
         uses: codecov/codecov-action@v4
         with:
-          files: '**/coverage.cobertura.xml'
+          files: '**/TestResults/**/coverage.cobertura.xml'
           fail_ci_if_error: false
 
   # NuGet パッケージ公開（Tagプッシュ時のみ）
