@@ -49,7 +49,12 @@ jobs:
         run: dotnet build --configuration ${{ env.CONFIGURATION }} --no-restore
 
       - name: Test
-        run: dotnet test --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger "trx;LogFileName=test-results.trx"
+        run: |
+          export LANG=ja_JP.UTF-8
+          export LC_ALL=ja_JP.UTF-8
+          export DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+          chcp 65001 2>/dev/null || true
+          dotnet test --configuration ${{ env.CONFIGURATION }} --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger "trx;LogFileName=test-results.trx" --logger "console;verbosity=detailed;noprogress=true" -- RunConfiguration.ConsoleEncoding=utf-8
 
       - name: Upload test results
         if: always()
