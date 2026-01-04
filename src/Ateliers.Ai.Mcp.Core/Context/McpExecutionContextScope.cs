@@ -1,4 +1,4 @@
-﻿namespace Ateliers.Ai.Mcp.Logging.Context;
+﻿namespace Ateliers.Ai.Mcp.Context;
 
 /// <summary>
 /// MCP 実行コンテキスト スコープを表します。

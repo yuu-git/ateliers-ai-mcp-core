@@ -8,7 +8,7 @@ public sealed class McpLoggerOptions
     /// <summary>
     /// 記録する最小のログ レベルを取得または設定します。
     /// </summary>
-    public McpLogLevel MinimumLevel { get; internal set; } = McpLogLevel.Information;
+    public McpLogLevel MinimumLevel { get; init; } = McpLogLevel.Information;
 
     /// <summary>
     /// ログ ファイルを保存するディレクトリのパスを取得または設定します。

@@ -16,7 +16,7 @@ public class CompositeMcpLoggerTests
         var entry = new McpLogEntry
         {
             Level = McpLogLevel.Information,
-            Message = "Test message"
+            LogText = "Test message"
         };
 
         // Act
@@ -25,8 +25,8 @@ public class CompositeMcpLoggerTests
         // Assert
         Assert.Single(logger1.Entries);
         Assert.Single(logger2.Entries);
-        Assert.Equal("Test message", logger1.Entries[0].Message);
-        Assert.Equal("Test message", logger2.Entries[0].Message);
+        Assert.Equal("Test message", logger1.Entries[0].LogText);
+        Assert.Equal("Test message", logger2.Entries[0].LogText);
     }
 
     [Fact]
@@ -47,8 +47,8 @@ public class CompositeMcpLoggerTests
         Assert.Single(logger2.Entries);
         Assert.Equal(McpLogLevel.Information, logger1.Entries[0].Level);
         Assert.Equal(McpLogLevel.Information, logger2.Entries[0].Level);
-        Assert.Equal("Info message", logger1.Entries[0].Message);
-        Assert.Equal("Info message", logger2.Entries[0].Message);
+        Assert.Equal("Info message", logger1.Entries[0].LogText);
+        Assert.Equal("Info message", logger2.Entries[0].LogText);
     }
 
     [Fact]
@@ -132,9 +132,9 @@ public class CompositeMcpLoggerTests
         // Assert
         Assert.Equal(3, logger1.Entries.Count);
         Assert.Equal(3, logger2.Entries.Count);
-        Assert.Equal("Message 1", logger1.Entries[0].Message);
-        Assert.Equal("Message 2", logger1.Entries[1].Message);
-        Assert.Equal("Message 3", logger1.Entries[2].Message);
+        Assert.Equal("Message 1", logger1.Entries[0].LogText);
+        Assert.Equal("Message 2", logger1.Entries[1].LogText);
+        Assert.Equal("Message 3", logger1.Entries[2].LogText);
     }
 
     [Fact]
@@ -165,7 +165,7 @@ public class CompositeMcpLoggerTests
         var entry = new McpLogEntry
         {
             Level = McpLogLevel.Information,
-            Message = "Test message"
+            LogText = "Test message"
         };
 
         // Act & Assert (例外がスローされないことを確認)
@@ -184,7 +184,7 @@ public class CompositeMcpLoggerTests
         var entry = new McpLogEntry
         {
             Level = McpLogLevel.Information,
-            Message = "Test message"
+            LogText = "Test message"
         };
 
         // Act
@@ -192,7 +192,7 @@ public class CompositeMcpLoggerTests
 
         // Assert
         Assert.Single(validLogger.Entries);
-        Assert.Equal("Test message", validLogger.Entries[0].Message);
+        Assert.Equal("Test message", validLogger.Entries[0].LogText);
     }
 
     [Fact]
@@ -210,7 +210,7 @@ public class CompositeMcpLoggerTests
 
         // Assert
         Assert.Single(memoryLogger.Entries);
-        Assert.Equal("Mixed loggers test", memoryLogger.Entries[0].Message);
+        Assert.Equal("Mixed loggers test", memoryLogger.Entries[0].LogText);
     }
 
     // テスト用のロガー: 常に例外をスロー

@@ -36,7 +36,18 @@ public sealed class FileMcpLogger : IMcpLogger, IMcpLogReader
 
         var sb = new StringBuilder();
         sb.Append($"[{entry.Timestamp:O}] [{entry.Level}] ");
-        sb.Append(entry.Message);
+        
+        if (!string.IsNullOrEmpty(entry.CorrelationId))
+        {
+            sb.Append($"[CID:{entry.CorrelationId}] ");
+        }
+
+        if (!string.IsNullOrEmpty(entry.ToolName))
+        {
+            sb.Append($"[Tool:{entry.ToolName}] ");
+        }
+
+        sb.Append(entry.LogText);
 
         if (entry.Exception != null)
         {
@@ -48,22 +59,22 @@ public sealed class FileMcpLogger : IMcpLogger, IMcpLogReader
     }
 
     /// <inheritdoc/>
-    public void Trace(string message) => Log(new() { Level = McpLogLevel.Trace, Message = message });
+    public void Trace(string message) => Log(McpLogEntryFactory.Create(McpLogLevel.Trace, message));
 
     /// <inheritdoc/>
-    public void Debug(string message) => Log(new() { Level = McpLogLevel.Debug, Message = message });
+    public void Debug(string message) => Log(McpLogEntryFactory.Create(McpLogLevel.Debug, message));
 
     /// <inheritdoc/>
-    public void Info(string message) => Log(new() { Level = McpLogLevel.Information, Message = message });
+    public void Info(string message) => Log(McpLogEntryFactory.Create(McpLogLevel.Information, message));
 
     /// <inheritdoc/>
-    public void Warn(string message) => Log(new() { Level = McpLogLevel.Warning, Message = message });
+    public void Warn(string message) => Log(McpLogEntryFactory.Create(McpLogLevel.Warning, message));
 
     /// <inheritdoc/>
-    public void Error(string message, Exception? ex = null) => Log(new() { Level = McpLogLevel.Error, Message = message, Exception = ex });
+    public void Error(string message, Exception? ex = null) => Log(McpLogEntryFactory.Create(McpLogLevel.Error, message, ex));
 
     /// <inheritdoc/>
-    public void Critical(string message, Exception? ex = null) => Log(new() { Level = McpLogLevel.Critical, Message = message, Exception = ex });
+    public void Critical(string message, Exception? ex = null) => Log(McpLogEntryFactory.Create(McpLogLevel.Critical, message, ex));
 
     /// <inheritdoc/>
     public McpLogSession ReadByCorrelationId(string correlationId)
@@ -113,18 +124,25 @@ public sealed class FileMcpLogger : IMcpLogger, IMcpLogReader
     private static McpLogEntry? TryParse(string line)
     {
         // 例想定:
-        // 2025-01-01T12:34:56.789Z [INFO] message...
+        // [2026-01-04T19:47:36.4512537+00:00] [INFO] message...
         // フォーマットが違っても message として拾う
 
         try
         {
-            var timestampEnd = line.IndexOf(' ');
+            // タイムスタンプが角括弧で囲まれている形式に対応
+            if (!line.StartsWith('['))
+            {
+                return Fallback(line);
+            }
+
+            var timestampEnd = line.IndexOf(']');
             if (timestampEnd <= 0)
             {
                 return Fallback(line);
             }
 
-            var timestampText = line[..timestampEnd];
+            // 角括弧を除いたタイムスタンプ部分を取得
+            var timestampText = line[1..timestampEnd];
             if (!DateTimeOffset.TryParse(
                     timestampText,
                     CultureInfo.InvariantCulture,
@@ -134,16 +152,48 @@ public sealed class FileMcpLogger : IMcpLogger, IMcpLogReader
                 return Fallback(line);
             }
 
+            var correlationIdIndex = line.IndexOf("[CID:", StringComparison.OrdinalIgnoreCase);
+            var correlationId = string.Empty;
+            if (correlationIdIndex >= 0)
+            {
+                var cidEnd = line.IndexOf(']', correlationIdIndex);
+                if (cidEnd > correlationIdIndex)
+                {
+                    correlationId = line[(correlationIdIndex + 5)..cidEnd];
+                }
+            }
+
+            var toolNameIndex = line.IndexOf("[Tool:", StringComparison.OrdinalIgnoreCase);
+            var toolName = string.Empty;
+            if (toolNameIndex >= 0)
+            {
+                var toolEnd = line.IndexOf(']', toolNameIndex);
+                if (toolEnd > toolNameIndex)
+                {
+                    toolName = line[(toolNameIndex + 6)..toolEnd];
+                }
+            }
+
+            var messageStart = line.LastIndexOf("] ");
+            var message = string.Empty;
+            if (messageStart >= 0 && messageStart + 2 < line.Length)
+            {
+                message = line[(messageStart + 2)..];
+            }
+
             return new McpLogEntry
             {
+                CorrelationId = correlationId,
+                ToolName = toolName,
                 Timestamp = timestamp,
                 Level = ExtractLevel(line),
-                Message = line
+                LogText = line,
+                Message = message
             };
         }
         catch
         {
-            return null;
+            return Fallback(line);
         }
     }
 
@@ -152,18 +202,18 @@ public sealed class FileMcpLogger : IMcpLogger, IMcpLogReader
         {
             Timestamp = DateTimeOffset.MinValue,
             Level = McpLogLevel.UNKNOWN,
-            Message = line
+            LogText = line
         };
 
     private static McpLogLevel ExtractLevel(string line)
     {
-        if (line.Contains("[TRACE]")) return McpLogLevel.Trace;
-        if (line.Contains("[DEBUG]")) return McpLogLevel.Debug;
+        if (line.Contains("[Trace]")) return McpLogLevel.Trace;
+        if (line.Contains("[Debug]")) return McpLogLevel.Debug;
 
-        if (line.Contains("[INFO]")) return McpLogLevel.Information;
-        if (line.Contains("[WARN]")) return McpLogLevel.Warning;
-        if (line.Contains("[ERROR]")) return McpLogLevel.Error;
-        if (line.Contains("[FATAL]")) return McpLogLevel.Critical;
+        if (line.Contains("[Information]")) return McpLogLevel.Information;
+        if (line.Contains("[Warning]")) return McpLogLevel.Warning;
+        if (line.Contains("[Error]")) return McpLogLevel.Error;
+        if (line.Contains("[Critical]")) return McpLogLevel.Critical;
 
         return McpLogLevel.UNKNOWN;
     }

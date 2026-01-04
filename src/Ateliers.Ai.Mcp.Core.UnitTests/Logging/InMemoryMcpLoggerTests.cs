@@ -14,7 +14,7 @@ public class InMemoryMcpLoggerTests
         var entry = new McpLogEntry
         {
             Level = McpLogLevel.Information,
-            Message = "Test message"
+            LogText = "Test message"
         };
 
         // Act
@@ -22,7 +22,7 @@ public class InMemoryMcpLoggerTests
 
         // Assert
         Assert.Single(logger.Entries);
-        Assert.Equal("Test message", logger.Entries[0].Message);
+        Assert.Equal("Test message", logger.Entries[0].LogText);
         Assert.Equal(McpLogLevel.Information, logger.Entries[0].Level);
     }
 
@@ -36,7 +36,7 @@ public class InMemoryMcpLoggerTests
         var entry = new McpLogEntry
         {
             Level = McpLogLevel.Debug,
-            Message = "Test message"
+            LogText = "Test message"
         };
 
         // Act
@@ -60,7 +60,7 @@ public class InMemoryMcpLoggerTests
         // Assert
         Assert.Single(logger.Entries);
         Assert.Equal(McpLogLevel.Information, logger.Entries[0].Level);
-        Assert.Equal("Info message", logger.Entries[0].Message);
+        Assert.Equal("Info message", logger.Entries[0].LogText);
     }
 
     [Fact]
@@ -77,7 +77,7 @@ public class InMemoryMcpLoggerTests
         // Assert
         Assert.Single(logger.Entries);
         Assert.Equal(McpLogLevel.Warning, logger.Entries[0].Level);
-        Assert.Equal("Warning message", logger.Entries[0].Message);
+        Assert.Equal("Warning message", logger.Entries[0].LogText);
     }
 
     [Fact]
@@ -95,7 +95,7 @@ public class InMemoryMcpLoggerTests
         // Assert
         Assert.Single(logger.Entries);
         Assert.Equal(McpLogLevel.Error, logger.Entries[0].Level);
-        Assert.Equal("Error message", logger.Entries[0].Message);
+        Assert.Equal("Error message", logger.Entries[0].LogText);
         Assert.Equal(exception, logger.Entries[0].Exception);
     }
 
@@ -114,7 +114,7 @@ public class InMemoryMcpLoggerTests
         // Assert
         Assert.Single(logger.Entries);
         Assert.Equal(McpLogLevel.Critical, logger.Entries[0].Level);
-        Assert.Equal("Critical message", logger.Entries[0].Message);
+        Assert.Equal("Critical message", logger.Entries[0].LogText);
         Assert.Equal(exception, logger.Entries[0].Exception);
     }
 
@@ -149,9 +149,9 @@ public class InMemoryMcpLoggerTests
 
         // Assert
         Assert.Equal(3, logger.Entries.Count);
-        Assert.Equal("Message 1", logger.Entries[0].Message);
-        Assert.Equal("Message 2", logger.Entries[1].Message);
-        Assert.Equal("Message 3", logger.Entries[2].Message);
+        Assert.Equal("Message 1", logger.Entries[0].LogText);
+        Assert.Equal("Message 2", logger.Entries[1].LogText);
+        Assert.Equal("Message 3", logger.Entries[2].LogText);
     }
 
     [Fact]

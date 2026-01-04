@@ -36,7 +36,7 @@ public class ConsoleMcpLoggerTests : IDisposable
         var entry = new McpLogEntry
         {
             Level = McpLogLevel.Information,
-            Message = "Test message"
+            LogText = "Test message"
         };
 
         // Act
@@ -58,7 +58,7 @@ public class ConsoleMcpLoggerTests : IDisposable
         var entry = new McpLogEntry
         {
             Level = McpLogLevel.Debug,
-            Message = "Debug message"
+            LogText = "Debug message"
         };
 
         // Act
@@ -172,7 +172,7 @@ public class ConsoleMcpLoggerTests : IDisposable
         var entry = new McpLogEntry
         {
             Level = McpLogLevel.Information,
-            Message = "Test message",
+            LogText = "Test message",
             Timestamp = timestamp
         };
 
@@ -194,7 +194,7 @@ public class ConsoleMcpLoggerTests : IDisposable
         var entry = new McpLogEntry
         {
             Level = McpLogLevel.Error,
-            Message = "Error without exception",
+            LogText = "Error without exception",
             Exception = null
         };
 

@@ -1,3 +1,4 @@
+using Ateliers.Ai.Mcp.Context;
 using Ateliers.Ai.Mcp.Logging;
 
 namespace Ateliers.Ai.Mcp.Core.UnitTests.Logging;
@@ -16,7 +17,7 @@ public class FileMcpLoggerTests : IDisposable
     {
         if (Directory.Exists(_testLogDirectory))
         {
-            Directory.Delete(_testLogDirectory, recursive: true);
+            //Directory.Delete(_testLogDirectory, recursive: true);
         }
     }
 
@@ -30,7 +31,7 @@ public class FileMcpLoggerTests : IDisposable
         var entry = new McpLogEntry
         {
             Level = McpLogLevel.Information,
-            Message = "Test message"
+            LogText = "Test message"
         };
 
         // Act
@@ -51,7 +52,7 @@ public class FileMcpLoggerTests : IDisposable
         var entry = new McpLogEntry
         {
             Level = McpLogLevel.Information,
-            Message = "Test message"
+            LogText = "Test message"
         };
 
         // Act
@@ -74,7 +75,7 @@ public class FileMcpLoggerTests : IDisposable
         var entry = new McpLogEntry
         {
             Level = McpLogLevel.Debug,
-            Message = "Debug message"
+            LogText = "Debug message"
         };
 
         // Act
@@ -249,11 +250,34 @@ public class FileMcpLoggerTests : IDisposable
         // Assert
         var defaultLogDir = Path.Combine(AppContext.BaseDirectory, "logs", "app");
         Assert.True(Directory.Exists(defaultLogDir));
+    }
 
-        // Cleanup
-        if (Directory.Exists(defaultLogDir))
-        {
-            Directory.Delete(defaultLogDir, recursive: true);
-        }
+    [Fact]
+    [Trait("説明", @"相関IDでログセッションを正しく読み取れること")]
+    public async Task ReadNyCorrelationId_ShouldReturnCorrectSession()
+    {
+        // Arrange
+        var options = new McpLoggerOptions { LogDirectory = _testLogDirectory };
+        var logger = new FileMcpLogger(options);
+        using var scope = new McpExecutionContextScope("TestTool.Run");
+
+        // Act
+        logger.Info("Test.Start");
+        logger.Info("Test.Success");
+
+        var correlationId = McpExecutionContext.Current?.CorrelationId;
+        Assert.NotNull(correlationId);
+        
+        var session = logger.ReadByCorrelationId(correlationId!);
+
+        // Assert
+        Assert.Equal(correlationId, session.CorrelationId);
+        Assert.Equal(2, session.Entries.Count);
+        // First Entry
+        Assert.Equal("Test.Start", session.Entries[0].Message);
+        Assert.Equal(McpLogLevel.Information, session.Entries[0].Level);
+        // Second Entry
+        Assert.Equal("Test.Success", session.Entries[1].Message);
+        Assert.Equal(McpLogLevel.Information, session.Entries[1].Level);
     }
 }

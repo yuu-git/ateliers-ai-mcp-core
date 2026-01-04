@@ -1,9 +1,9 @@
-﻿namespace Ateliers.Ai.Mcp.Logging.Context;
+﻿namespace Ateliers.Ai.Mcp.Context;
 
 /// <summary>
 /// MCP 実行コンテキストを表します。
 /// </summary>
-public sealed class McpExecutionContext
+public sealed class McpExecutionContext : IMcpExecutionContext
 {
     private static readonly AsyncLocal<McpExecutionContext?> _current = new();
 
@@ -35,5 +35,11 @@ public sealed class McpExecutionContext
     {
         CorrelationId = correlationId;
         ToolName = toolName;
+    }
+
+    /// <inheritdoc/>
+    public McpExecutionContextScope BeginTool(string toolName)
+    {
+        return new McpExecutionContextScope(toolName);
     }
 }
