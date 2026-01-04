@@ -115,3 +115,6 @@ appsettings.*.json
 # MCP generated notes (user data)
 notes/
 *.backup
+
+# Project Knowledge (if using copy script)
+.project-knowledge/
