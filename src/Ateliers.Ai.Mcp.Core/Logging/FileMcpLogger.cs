@@ -117,6 +117,43 @@ public sealed class FileMcpLogger : IMcpLogger, IMcpLogReader
             Entries = Array.Empty<McpLogEntry>()
         };
 
+    /// <inheritdoc/>
+    public McpLogSession ReadLastSession()
+    {
+        if (!Directory.Exists(_logDir))
+        {
+            return new McpLogSession
+            {
+                CorrelationId = string.Empty,
+                Entries = Array.Empty<McpLogEntry>()
+            };
+        }
+        var latestEntry = (McpLogEntry?)null;
+        foreach (var file in Directory.EnumerateFiles(_logDir, "*.log"))
+        {
+            foreach (var line in File.ReadLines(file))
+            {
+                var entry = TryParse(line);
+                if (entry == null)
+                    continue;
+                if (latestEntry == null || entry.Timestamp > latestEntry.Timestamp)
+                {
+                    latestEntry = entry;
+                }
+            }
+        }
+        if (latestEntry == null || string.IsNullOrEmpty(latestEntry.CorrelationId))
+        {
+            return new McpLogSession
+            {
+                CorrelationId = string.Empty,
+                Entries = Array.Empty<McpLogEntry>()
+            };
+        }
+
+        return ReadByCorrelationId(latestEntry.CorrelationId);
+    }
+
     /// <summary>
     /// 超ゆるいパーサ。
     /// フォーマットが変わっても壊れないことを最優先。

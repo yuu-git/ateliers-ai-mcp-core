@@ -81,6 +81,28 @@ public sealed class InMemoryMcpLogger : IMcpLogger, IMcpLogReader
         }
     }
 
+    /// <inheritdoc/>
+    public McpLogSession ReadLastSession()
+    {
+        var lastCorrelationId = _logs.Keys
+            .Select(cid => new
+            {
+                CorrelationId = cid,
+                LastTimestamp = _logs[cid].Max(e => e.Timestamp)
+            })
+            .OrderByDescending(x => x.LastTimestamp)
+            .FirstOrDefault()?.CorrelationId;
+        if (lastCorrelationId == null)
+        {
+            return new McpLogSession
+            {
+                CorrelationId = string.Empty,
+                Entries = Array.Empty<McpLogEntry>()
+            };
+        }
+        return ReadByCorrelationId(lastCorrelationId);
+    }
+
     /// <summary>
     /// 指定された相関 ID に対してログ エントリを追加します。
     /// </summary>
