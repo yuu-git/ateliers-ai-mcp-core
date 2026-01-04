@@ -17,7 +17,7 @@ public class FileMcpLoggerTests : IDisposable
     {
         if (Directory.Exists(_testLogDirectory))
         {
-            //Directory.Delete(_testLogDirectory, recursive: true);
+            Directory.Delete(_testLogDirectory, recursive: true);
         }
     }
 
