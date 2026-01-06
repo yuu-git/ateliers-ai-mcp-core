@@ -10,20 +10,30 @@ public sealed class McpExecutionContextScope : IDisposable
     /// <summary>
     /// McpExecutionContextScope の新しいインスタンスを初期化します。
     /// </summary>
-    /// <param name="toolName"> ツール名 </param>
+    /// <param name="toolName">ツール名</param>
     public McpExecutionContextScope(string toolName)
     {
         _previous = McpExecutionContext.Current;
 
-        McpExecutionContext.Current = new McpExecutionContext(
+        var newContext = new McpExecutionContext(
             correlationId: Guid.NewGuid().ToString("N"),
             toolName: toolName
         );
+
+        SetContext(newContext);
+    }
+
+    private static void SetContext(McpExecutionContext? context)
+    {
+        typeof(Ateliers.Context.ExecutionContext)
+            .GetMethod("SetCurrent", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)
+            ?.Invoke(null, [context]);
     }
 
     /// <inheritdoc/>
     public void Dispose()
     {
-        McpExecutionContext.Current = _previous;
+        SetContext(_previous);
+        GC.SuppressFinalize(this);
     }
 }

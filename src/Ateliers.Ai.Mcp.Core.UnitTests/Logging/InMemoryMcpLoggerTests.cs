@@ -1,3 +1,4 @@
+ï»¿using Ateliers.Logging;
 using Ateliers.Ai.Mcp.Logging;
 
 namespace Ateliers.Ai.Mcp.Core.UnitTests.Logging;
@@ -5,7 +6,7 @@ namespace Ateliers.Ai.Mcp.Core.UnitTests.Logging;
 public class InMemoryMcpLoggerTests
 {
     [Fact]
-    [Trait("à–¾", @"Å¬ƒŒƒxƒ‹ˆÈã‚ÌƒƒOƒGƒ“ƒgƒŠ‚ª‹L˜^‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"æœ€å°ãƒ¬ãƒ™ãƒ«ä»¥ä¸Šã®ãƒ­ã‚°ã‚¨ãƒ³ãƒˆãƒªã‚’è¨˜éŒ²ã™ã‚‹ã“ã¨")]
     public void Log_ShouldAddEntryWhenLevelIsAboveMinimum()
     {
         // Arrange
@@ -13,7 +14,7 @@ public class InMemoryMcpLoggerTests
         var logger = new InMemoryMcpLogger(options);
         var entry = new McpLogEntry
         {
-            Level = McpLogLevel.Information,
+            Level = LogLevel.Information,
             LogText = "Test message"
         };
 
@@ -23,11 +24,11 @@ public class InMemoryMcpLoggerTests
         // Assert
         Assert.Single(logger.Entries);
         Assert.Equal("Test message", logger.Entries[0].LogText);
-        Assert.Equal(McpLogLevel.Information, logger.Entries[0].Level);
+        Assert.Equal(LogLevel.Information, logger.Entries[0].Level);
     }
 
     [Fact]
-    [Trait("à–¾", @"Å¬ƒŒƒxƒ‹–¢–‚ÌƒƒOƒGƒ“ƒgƒŠ‚ª‹L˜^‚³‚ê‚È‚¢‚±‚Æ")]
+    [Trait("èª¬æ˜", @"æœ€å°ãƒ¬ãƒ™ãƒ«æœªæº€ã®ãƒ­ã‚°ã‚¨ãƒ³ãƒˆãƒªã‚’è¨˜éŒ²ã—ãªã„ã“ã¨")]
     public void Log_ShouldNotAddEntryWhenLevelIsBelowMinimum()
     {
         // Arrange
@@ -35,7 +36,7 @@ public class InMemoryMcpLoggerTests
         var logger = new InMemoryMcpLogger(options);
         var entry = new McpLogEntry
         {
-            Level = McpLogLevel.Debug,
+            Level = LogLevel.Debug,
             LogText = "Test message"
         };
 
@@ -47,7 +48,7 @@ public class InMemoryMcpLoggerTests
     }
 
     [Fact]
-    [Trait("à–¾", @"Info ƒƒ\ƒbƒh‚Åî•ñƒŒƒxƒ‹‚ÌƒƒO‚ª‹L˜^‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"Info ãƒ¡ã‚½ãƒƒãƒ‰ã§æƒ…å ±ãƒ¬ãƒ™ãƒ«ã®ãƒ­ã‚°ã‚’è¨˜éŒ²ã™ã‚‹ã“ã¨")]
     public void Info_ShouldLogInformationLevel()
     {
         // Arrange
@@ -59,12 +60,12 @@ public class InMemoryMcpLoggerTests
 
         // Assert
         Assert.Single(logger.Entries);
-        Assert.Equal(McpLogLevel.Information, logger.Entries[0].Level);
+        Assert.Equal(LogLevel.Information, logger.Entries[0].Level);
         Assert.Equal("Info message", logger.Entries[0].LogText);
     }
 
     [Fact]
-    [Trait("à–¾", @"Warn ƒƒ\ƒbƒh‚ÅŒxƒŒƒxƒ‹‚ÌƒƒO‚ª‹L˜^‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"Warn ãƒ¡ã‚½ãƒƒãƒ‰ã§è­¦å‘Šãƒ¬ãƒ™ãƒ«ã®ãƒ­ã‚°ã‚’è¨˜éŒ²ã™ã‚‹ã“ã¨")]
     public void Warn_ShouldLogWarningLevel()
     {
         // Arrange
@@ -76,12 +77,12 @@ public class InMemoryMcpLoggerTests
 
         // Assert
         Assert.Single(logger.Entries);
-        Assert.Equal(McpLogLevel.Warning, logger.Entries[0].Level);
+        Assert.Equal(LogLevel.Warning, logger.Entries[0].Level);
         Assert.Equal("Warning message", logger.Entries[0].LogText);
     }
 
     [Fact]
-    [Trait("à–¾", @"Error ƒƒ\ƒbƒh‚ÅƒGƒ‰[ƒŒƒxƒ‹‚ÌƒƒO‚Æ—áŠO‚ª‹L˜^‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"Error ãƒ¡ã‚½ãƒƒãƒ‰ã§ã‚¨ãƒ©ãƒ¼ãƒ¬ãƒ™ãƒ«ã®ãƒ­ã‚°ã¨ä¾‹å¤–ã‚’è¨˜éŒ²ã™ã‚‹ã“ã¨")]
     public void Error_ShouldLogErrorLevel()
     {
         // Arrange
@@ -94,13 +95,13 @@ public class InMemoryMcpLoggerTests
 
         // Assert
         Assert.Single(logger.Entries);
-        Assert.Equal(McpLogLevel.Error, logger.Entries[0].Level);
+        Assert.Equal(LogLevel.Error, logger.Entries[0].Level);
         Assert.Equal("Error message", logger.Entries[0].LogText);
         Assert.Equal(exception, logger.Entries[0].Exception);
     }
 
     [Fact]
-    [Trait("à–¾", @"Critical ƒƒ\ƒbƒh‚Åd‘åƒŒƒxƒ‹‚ÌƒƒO‚Æ—áŠO‚ª‹L˜^‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"Critical ãƒ¡ã‚½ãƒƒãƒ‰ã§é‡å¤§ãƒ¬ãƒ™ãƒ«ã®ãƒ­ã‚°ã¨ä¾‹å¤–ã‚’è¨˜éŒ²ã™ã‚‹ã“ã¨")]
     public void Critical_ShouldLogCriticalLevel()
     {
         // Arrange
@@ -113,13 +114,13 @@ public class InMemoryMcpLoggerTests
 
         // Assert
         Assert.Single(logger.Entries);
-        Assert.Equal(McpLogLevel.Critical, logger.Entries[0].Level);
+        Assert.Equal(LogLevel.Critical, logger.Entries[0].Level);
         Assert.Equal("Critical message", logger.Entries[0].LogText);
         Assert.Equal(exception, logger.Entries[0].Exception);
     }
 
     [Fact]
-    [Trait("à–¾", @"‘¶İ‚µ‚È‚¢‘ŠŠÖID‚ÅŒŸõ‚µ‚½ê‡A‹ó‚ÌƒZƒbƒVƒ‡ƒ“‚ª•Ô‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"å­˜åœ¨ã—ãªã„ç›¸é–¢IDã§æ¤œç´¢ã—ãŸå ´åˆã€ç©ºã®ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’è¿”ã™ã“ã¨")]
     public void ReadByCorrelationId_ShouldReturnEmptySessionWhenCorrelationIdNotFound()
     {
         // Arrange
@@ -135,7 +136,7 @@ public class InMemoryMcpLoggerTests
     }
 
     [Fact]
-    [Trait("à–¾", @"•¡”‚ÌƒƒOŒÄ‚Ño‚µ‚ÅƒGƒ“ƒgƒŠ‚ª’~Ï‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"è¤‡æ•°ã®ãƒ­ã‚°å‘¼ã³å‡ºã—ã§ã‚¨ãƒ³ãƒˆãƒªãŒè“„ç©ã•ã‚Œã‚‹ã“ã¨")]
     public void MultipleLogCalls_ShouldAccumulateEntries()
     {
         // Arrange
@@ -155,7 +156,7 @@ public class InMemoryMcpLoggerTests
     }
 
     [Fact]
-    [Trait("à–¾", @"Entries ƒvƒƒpƒeƒB‚ª“Ç‚İæ‚èê—p‚Å‚ ‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"Entries ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£ã¯èª­ã¿å–ã‚Šå°‚ç”¨ã§ã‚ã‚‹ã“ã¨")]
     public void Entries_ShouldBeReadOnly()
     {
         // Arrange

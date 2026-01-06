@@ -6,7 +6,7 @@
     <LangVersion>latest</LangVersion>
 
     <!-- NuGet パッケージ情報 -->
-    <Version>0.3.0-alpha.1</Version>
+    <Version>0.3.1-alpha.1</Version>
     <PackageId>Ateliers.Ai.Mcp.Core</PackageId>
     <Authors>ateliers</Authors>
     <Company>ateliers.dev</Company>
@@ -20,9 +20,9 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
 
     <!-- Assembly情報の自動生成（追加） -->
-    <AssemblyVersion>0.3.0.0</AssemblyVersion>
-    <FileVersion>0.3.0.0</FileVersion>
-    <InformationalVersion>0.3.0-alpha.1</InformationalVersion>
+    <AssemblyVersion>0.3.1.0</AssemblyVersion>
+    <FileVersion>0.3.1.0</FileVersion>
+    <InformationalVersion>0.3.1-alpha.1</InformationalVersion>
 
     <!-- NuGet パッケージ設定 -->
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
@@ -39,6 +39,7 @@
 
   <!-- 基本的な依存パッケージ -->
   <ItemGroup>
+    <PackageReference Include="Ateliers.Core" Version="0.1.0-alpha.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
   </ItemGroup>

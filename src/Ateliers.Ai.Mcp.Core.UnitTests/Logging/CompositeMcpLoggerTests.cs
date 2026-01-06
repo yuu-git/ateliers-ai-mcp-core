@@ -1,11 +1,12 @@
-using Ateliers.Ai.Mcp.Logging;
+ï»¿using Ateliers.Ai.Mcp.Logging;
+using Ateliers.Logging;
 
 namespace Ateliers.Ai.Mcp.Core.UnitTests.Logging;
 
 public class CompositeMcpLoggerTests
 {
     [Fact]
-    [Trait("à–¾", @"•¡”‚ÌƒƒK[‚ÉƒƒO‚ª“]‘—‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"è¤‡æ•°ã®ãƒ­ã‚¬ãƒ¼ã«ãƒ­ã‚°ã‚’è»¢é€ã™ã‚‹ã“ã¨")]
     public void Log_ShouldForwardToAllLoggers()
     {
         // Arrange
@@ -15,7 +16,7 @@ public class CompositeMcpLoggerTests
         var compositeLogger = new CompositeMcpLogger(new[] { logger1, logger2 });
         var entry = new McpLogEntry
         {
-            Level = McpLogLevel.Information,
+            Level = LogLevel.Information,
             LogText = "Test message"
         };
 
@@ -30,7 +31,7 @@ public class CompositeMcpLoggerTests
     }
 
     [Fact]
-    [Trait("à–¾", @"Info ƒƒ\ƒbƒh‚Å‘S‚Ä‚ÌƒƒK[‚Éî•ñƒŒƒxƒ‹‚ÌƒƒO‚ª‹L˜^‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"Info ãƒ¡ã‚½ãƒƒãƒ‰ã§å…¨ã¦ã®ãƒ­ã‚¬ãƒ¼ã«æƒ…å ±ãƒ¬ãƒ™ãƒ«ã®ãƒ­ã‚°ã‚’è¨˜éŒ²ã™ã‚‹ã“ã¨")]
     public void Info_ShouldLogToAllLoggers()
     {
         // Arrange
@@ -45,14 +46,14 @@ public class CompositeMcpLoggerTests
         // Assert
         Assert.Single(logger1.Entries);
         Assert.Single(logger2.Entries);
-        Assert.Equal(McpLogLevel.Information, logger1.Entries[0].Level);
-        Assert.Equal(McpLogLevel.Information, logger2.Entries[0].Level);
+        Assert.Equal(LogLevel.Information, logger1.Entries[0].Level);
+        Assert.Equal(LogLevel.Information, logger2.Entries[0].Level);
         Assert.Equal("Info message", logger1.Entries[0].LogText);
         Assert.Equal("Info message", logger2.Entries[0].LogText);
     }
 
     [Fact]
-    [Trait("à–¾", @"Warn ƒƒ\ƒbƒh‚Å‘S‚Ä‚ÌƒƒK[‚ÉŒxƒŒƒxƒ‹‚ÌƒƒO‚ª‹L˜^‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"Warn ãƒ¡ã‚½ãƒƒãƒ‰ã§å…¨ã¦ã®ãƒ­ã‚¬ãƒ¼ã«è­¦å‘Šãƒ¬ãƒ™ãƒ«ã®ãƒ­ã‚°ã‚’è¨˜éŒ²ã™ã‚‹ã“ã¨")]
     public void Warn_ShouldLogToAllLoggers()
     {
         // Arrange
@@ -67,12 +68,12 @@ public class CompositeMcpLoggerTests
         // Assert
         Assert.Single(logger1.Entries);
         Assert.Single(logger2.Entries);
-        Assert.Equal(McpLogLevel.Warning, logger1.Entries[0].Level);
-        Assert.Equal(McpLogLevel.Warning, logger2.Entries[0].Level);
+        Assert.Equal(LogLevel.Warning, logger1.Entries[0].Level);
+        Assert.Equal(LogLevel.Warning, logger2.Entries[0].Level);
     }
 
     [Fact]
-    [Trait("à–¾", @"Error ƒƒ\ƒbƒh‚Å‘S‚Ä‚ÌƒƒK[‚ÉƒGƒ‰[ƒŒƒxƒ‹‚ÌƒƒO‚ª‹L˜^‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"Error ãƒ¡ã‚½ãƒƒãƒ‰ã§å…¨ã¦ã®ãƒ­ã‚¬ãƒ¼ã«ã‚¨ãƒ©ãƒ¼ãƒ¬ãƒ™ãƒ«ã®ãƒ­ã‚°ã‚’è¨˜éŒ²ã™ã‚‹ã“ã¨")]
     public void Error_ShouldLogToAllLoggers()
     {
         // Arrange
@@ -88,13 +89,13 @@ public class CompositeMcpLoggerTests
         // Assert
         Assert.Single(logger1.Entries);
         Assert.Single(logger2.Entries);
-        Assert.Equal(McpLogLevel.Error, logger1.Entries[0].Level);
+        Assert.Equal(LogLevel.Error, logger1.Entries[0].Level);
         Assert.Equal(exception, logger1.Entries[0].Exception);
         Assert.Equal(exception, logger2.Entries[0].Exception);
     }
 
     [Fact]
-    [Trait("à–¾", @"Critical ƒƒ\ƒbƒh‚Å‘S‚Ä‚ÌƒƒK[‚Éd‘åƒŒƒxƒ‹‚ÌƒƒO‚ª‹L˜^‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"Critical ãƒ¡ã‚½ãƒƒãƒ‰ã§å…¨ã¦ã®ãƒ­ã‚¬ãƒ¼ã«é‡å¤§ãƒ¬ãƒ™ãƒ«ã®ãƒ­ã‚°ã‚’è¨˜éŒ²ã™ã‚‹ã“ã¨")]
     public void Critical_ShouldLogToAllLoggers()
     {
         // Arrange
@@ -110,12 +111,12 @@ public class CompositeMcpLoggerTests
         // Assert
         Assert.Single(logger1.Entries);
         Assert.Single(logger2.Entries);
-        Assert.Equal(McpLogLevel.Critical, logger1.Entries[0].Level);
+        Assert.Equal(LogLevel.Critical, logger1.Entries[0].Level);
         Assert.Equal(exception, logger1.Entries[0].Exception);
     }
 
     [Fact]
-    [Trait("à–¾", @"•¡”‚ÌƒƒOŒÄ‚Ño‚µ‚Å‘S‚Ä‚ÌƒƒK[‚ÉƒGƒ“ƒgƒŠ‚ª’~Ï‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"è¤‡æ•°ã®ãƒ­ã‚°å‘¼ã³å‡ºã—ã§å…¨ã¦ã®ãƒ­ã‚¬ãƒ¼ã«ã‚¨ãƒ³ãƒˆãƒªãŒè“„ç©ã•ã‚Œã‚‹ã“ã¨")]
     public void MultipleLogCalls_ShouldAccumulateEntriesInAllLoggers()
     {
         // Arrange
@@ -138,7 +139,7 @@ public class CompositeMcpLoggerTests
     }
 
     [Fact]
-    [Trait("à–¾", @"ƒƒK[ƒRƒŒƒNƒVƒ‡ƒ“‚ªnull‚Ìê‡A—áŠO‚ªƒXƒ[‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"ãƒ­ã‚¬ãƒ¼ã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³ãŒnullã®å ´åˆã€ä¾‹å¤–ã‚’ã‚¹ãƒ­ãƒ¼ã™ã‚‹ã“ã¨")]
     public void Constructor_ShouldThrowWhenLoggersIsNull()
     {
         // Act & Assert
@@ -146,7 +147,7 @@ public class CompositeMcpLoggerTests
     }
 
     [Fact]
-    [Trait("à–¾", @"‹ó‚ÌƒƒK[ƒRƒŒƒNƒVƒ‡ƒ“‚Å‚à—áŠO‚ªƒXƒ[‚³‚ê‚È‚¢‚±‚Æ")]
+    [Trait("èª¬æ˜", @"ç©ºã®ãƒ­ã‚¬ãƒ¼ã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³ã§ã‚‚ä¾‹å¤–ã‚’ã‚¹ãƒ­ãƒ¼ã—ãªã„ã“ã¨")]
     public void Constructor_ShouldNotThrowWhenLoggersIsEmpty()
     {
         // Arrange & Act
@@ -157,23 +158,23 @@ public class CompositeMcpLoggerTests
     }
 
     [Fact]
-    [Trait("à–¾", @"‹ó‚ÌƒƒK[ƒRƒŒƒNƒVƒ‡ƒ“‚ÅƒƒO‚ªŒÄ‚Ño‚³‚ê‚Ä‚à—áŠO‚ªƒXƒ[‚³‚ê‚È‚¢‚±‚Æ")]
+    [Trait("èª¬æ˜", @"ç©ºã®ãƒ­ã‚¬ãƒ¼ã‚³ãƒ¬ã‚¯ã‚·ãƒ§ãƒ³ã§ãƒ­ã‚°å‘¼ã³å‡ºã—ã¦ã‚‚ä¾‹å¤–ã‚’ã‚¹ãƒ­ãƒ¼ã—ãªã„ã“ã¨")]
     public void Log_ShouldNotThrowWhenNoLoggers()
     {
         // Arrange
         var compositeLogger = new CompositeMcpLogger(Array.Empty<IMcpLogger>());
         var entry = new McpLogEntry
         {
-            Level = McpLogLevel.Information,
+            Level = LogLevel.Information,
             LogText = "Test message"
         };
 
-        // Act & Assert (—áŠO‚ªƒXƒ[‚³‚ê‚È‚¢‚±‚Æ‚ğŠm”F)
+        // Act & Assert (ä¾‹å¤–ã‚’ã‚¹ãƒ­ãƒ¼ã—ãªã„ã“ã¨ã‚’ç¢ºèª)
         compositeLogger.Log(entry);
     }
 
     [Fact]
-    [Trait("à–¾", @"ˆê‚Â‚ÌƒƒK[‚ª—áŠO‚ğƒXƒ[‚µ‚Ä‚à‘¼‚ÌƒƒK[‚ÉƒƒO‚ª‹L˜^‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"ä¸€ã¤ã®ãƒ­ã‚¬ãƒ¼ãŒä¾‹å¤–ã‚’ã‚¹ãƒ­ãƒ¼ã—ã¦ã‚‚ä»–ã®ãƒ­ã‚¬ãƒ¼ã«ãƒ­ã‚°ã‚’è¨˜éŒ²ã™ã‚‹ã“ã¨")]
     public void Log_ShouldContinueWhenOneLoggerThrows()
     {
         // Arrange
@@ -183,7 +184,7 @@ public class CompositeMcpLoggerTests
         var compositeLogger = new CompositeMcpLogger(new IMcpLogger[] { throwingLogger, validLogger });
         var entry = new McpLogEntry
         {
-            Level = McpLogLevel.Information,
+            Level = LogLevel.Information,
             LogText = "Test message"
         };
 
@@ -196,7 +197,7 @@ public class CompositeMcpLoggerTests
     }
 
     [Fact]
-    [Trait("à–¾", @"ˆÙ‚È‚éí—Ş‚ÌƒƒK[‚ğ‘g‚İ‡‚í‚¹‚é‚±‚Æ‚ª‚Å‚«‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"ç•°ãªã‚‹ç¨®é¡ã®ãƒ­ã‚¬ãƒ¼ã‚’çµ„ã¿åˆã‚ã›ã‚‹ã“ã¨ãŒã§ãã‚‹ã“ã¨")]
     public void Log_ShouldWorkWithDifferentLoggerTypes()
     {
         // Arrange
@@ -213,10 +214,11 @@ public class CompositeMcpLoggerTests
         Assert.Equal("Mixed loggers test", memoryLogger.Entries[0].LogText);
     }
 
-    // ƒeƒXƒg—p‚ÌƒƒK[: í‚É—áŠO‚ğƒXƒ[
+    // ãƒ†ã‚¹ãƒˆç”¨ã®ãƒ­ã‚¬ãƒ¼: å¸¸ã«ä¾‹å¤–ã‚’ã‚¹ãƒ­ãƒ¼
     private class ThrowingMcpLogger : IMcpLogger
     {
         public void Log(McpLogEntry entry) => throw new InvalidOperationException("Test exception");
+        public void Log(LogEntry entry) => throw new InvalidOperationException("Test exception");
         public void Trace(string message) => throw new InvalidOperationException("Test exception");
         public void Debug(string message) => throw new InvalidOperationException("Test exception");
         public void Info(string message) => throw new InvalidOperationException("Test exception");

@@ -1,18 +1,18 @@
-﻿namespace Ateliers.Ai.Mcp.Logging;
+﻿using Ateliers.Logging;
+
+namespace Ateliers.Ai.Mcp.Logging;
 
 /// <summary>
 /// MCP ログ セッションを表します。
 /// </summary>
-public sealed class McpLogSession
+public sealed class McpLogSession : LogSession
 {
     /// <summary>
-    /// 相関 ID
+    /// ログ エントリのコレクション（MCP固有）
     /// </summary>
-    public string CorrelationId { get; init; } = string.Empty;
-
-    /// <summary>
-    /// ログ エントリのコレクション
-    /// </summary>
-    public IReadOnlyList<McpLogEntry> Entries { get; init; }
-        = Array.Empty<McpLogEntry>();
+    public new IReadOnlyList<McpLogEntry> Entries
+    {
+        get => base.Entries.Cast<McpLogEntry>().ToList();
+        init => base.Entries = value;
+    }
 }

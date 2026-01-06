@@ -1,61 +1,77 @@
 ﻿using System.Collections.Concurrent;
+using Ateliers.Logging;
 
 namespace Ateliers.Ai.Mcp.Logging;
 
 /// <summary>
 /// メモリログを管理する MCP ロガー
 /// </summary>
-public sealed class InMemoryMcpLogger : IMcpLogger, IMcpLogReader
+public sealed class InMemoryMcpLogger : InMemoryLogger, IMcpLogger, IMcpLogReader
 {
     private readonly McpLoggerOptions _options;
-    private readonly List<McpLogEntry> _entries = new();
+    private readonly List<McpLogEntry> _mcpEntries = new();
     private readonly ConcurrentDictionary<string, List<McpLogEntry>> _logs = new();
 
     /// <summary>
-    /// ログ エントリの読み取り専用リストを取得します。
+    /// MCP ログ エントリの読み取り専用リストを取得します。
     /// </summary>
-    public IReadOnlyList<McpLogEntry> Entries => _entries;
+    public new IReadOnlyList<McpLogEntry> Entries => _mcpEntries;
 
     /// <summary>
     /// メモリロガー の新しいインスタンスを初期化します。
     /// </summary>
-    /// <param name="options"> ロガーのオプション </param>
+    /// <param name="options">ロガーのオプション</param>
     public InMemoryMcpLogger(McpLoggerOptions options)
+        : base(options)
     {
         _options = options;
     }
 
     /// <summary>
-    /// ログ エントリを記録します。
+    /// MCP ログ エントリを記録します。
     /// </summary>
-    /// <param name="entry"> ログ エントリ </param>
+    /// <param name="entry">MCP ログ エントリ</param>
     public void Log(McpLogEntry entry)
     {
         if (entry.Level < _options.MinimumLevel)
             return;
 
-        _entries.Add(entry);
+        _mcpEntries.Add(entry);
+        base.Log(entry);
+        
+        // 相関IDがある場合は _logs にも追加
+        if (!string.IsNullOrEmpty(entry.CorrelationId))
+        {
+            Append(entry.CorrelationId, entry);
+        }
     }
 
     /// <inheritdoc/>
-    public void Trace(string message) => Log(McpLogEntryFactory.Create(McpLogLevel.Trace, message));
-
-    /// <inheritdoc/>
-    public void Debug(string message) => Log(McpLogEntryFactory.Create(McpLogLevel.Debug, message));
-
-    /// <inheritdoc/>
-    public void Info(string message) => Log(McpLogEntryFactory.Create(McpLogLevel.Information, message));
-
-    /// <inheritdoc/>
-    public void Warn(string message) => Log(McpLogEntryFactory.Create(McpLogLevel.Warning, message));
-
-    /// <inheritdoc/>
-    public void Error(string message, Exception? ex = null)
-        => Log(McpLogEntryFactory.Create(McpLogLevel.Error, message, ex));
-
-    /// <inheritdoc/>
-    public void Critical(string message, Exception? ex = null)
-        => Log(McpLogEntryFactory.Create(McpLogLevel.Critical, message, ex));
+    public override void Log(LogEntry entry)
+    {
+        if (entry is McpLogEntry mcpEntry)
+        {
+            Log(mcpEntry);
+        }
+        else
+        {
+            // 現在の MCP コンテキストから ToolName を取得
+            var currentContext = Ai.Mcp.Context.McpExecutionContext.Current;
+            
+            Log(new McpLogEntry
+            {
+                Timestamp = entry.Timestamp,
+                Level = entry.Level,
+                LogText = entry.LogText,
+                Message = entry.Message,
+                Exception = entry.Exception,
+                CorrelationId = entry.CorrelationId,
+                Category = entry.Category,
+                ToolName = currentContext?.ToolName,
+                Properties = entry.Properties
+            });
+        }
+    }
 
     /// <inheritdoc/>
     public McpLogSession ReadByCorrelationId(string correlationId)
@@ -81,6 +97,12 @@ public sealed class InMemoryMcpLogger : IMcpLogger, IMcpLogReader
         }
     }
 
+    /// <summary>
+    /// 指定された相関IDに基づいてログセッションを読み取ります（基底インターフェース実装）。
+    /// </summary>
+    LogSession ILogReader.ReadByCorrelationId(string correlationId)
+        => ReadByCorrelationId(correlationId);
+
     /// <inheritdoc/>
     public McpLogSession ReadLastSession()
     {
@@ -102,6 +124,56 @@ public sealed class InMemoryMcpLogger : IMcpLogger, IMcpLogReader
         }
         return ReadByCorrelationId(lastCorrelationId);
     }
+
+    /// <summary>
+    /// 最後のログセッションを読み取ります（基底インターフェース実装）。
+    /// </summary>
+    LogSession ILogReader.ReadLastSession()
+        => ReadLastSession();
+
+    /// <inheritdoc/>
+    public McpLogSession ReadByCategory(string category)
+    {
+        var entries = _mcpEntries
+            .Where(e => e.Category?.Equals(category, StringComparison.OrdinalIgnoreCase) == true)
+            .OrderBy(e => e.Timestamp)
+            .ToList();
+
+        return new McpLogSession
+        {
+            CorrelationId = string.Empty,
+            Entries = entries
+        };
+    }
+
+    /// <summary>
+    /// 指定されたカテゴリに基づいてログセッションを読み取ります（基底インターフェース実装）。
+    /// </summary>
+    LogSession ILogReader.ReadByCategory(string category)
+        => ReadByCategory(category);
+
+    /// <inheritdoc/>
+    public McpLogSession ReadByCorrelationIdAndCategory(string correlationId, string category)
+    {
+        var entries = _mcpEntries
+            .Where(e => 
+                e.CorrelationId?.Equals(correlationId, StringComparison.OrdinalIgnoreCase) == true &&
+                e.Category?.Equals(category, StringComparison.OrdinalIgnoreCase) == true)
+            .OrderBy(e => e.Timestamp)
+            .ToList();
+
+        return new McpLogSession
+        {
+            CorrelationId = correlationId,
+            Entries = entries
+        };
+    }
+
+    /// <summary>
+    /// 指定された相関IDとカテゴリに基づいてログセッションを読み取ります（基底インターフェース実装）。
+    /// </summary>
+    LogSession ILogReader.ReadByCorrelationIdAndCategory(string correlationId, string category)
+        => ReadByCorrelationIdAndCategory(correlationId, category);
 
     /// <summary>
     /// 指定された相関 ID に対してログ エントリを追加します。
@@ -132,5 +204,7 @@ public sealed class InMemoryMcpLogger : IMcpLogger, IMcpLogReader
     internal void ClearAll()
     {
         _logs.Clear();
+        _mcpEntries.Clear();
+        base.Clear();
     }
 }

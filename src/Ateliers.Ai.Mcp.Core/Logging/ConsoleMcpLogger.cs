@@ -1,29 +1,37 @@
-﻿namespace Ateliers.Ai.Mcp.Logging;
+﻿using Ateliers.Logging;
+
+namespace Ateliers.Ai.Mcp.Logging;
 
 /// <summary>
 /// コンソールにログを出力する MCP ロガーを表します。
 /// </summary>
-public sealed class ConsoleMcpLogger : IMcpLogger
+public sealed class ConsoleMcpLogger : ConsoleLogger, IMcpLogger
 {
     private readonly McpLoggerOptions _options;
 
     /// <summary>
     /// コンソール MCP ロガー の新しいインスタンスを初期化します。
     /// </summary>
-    /// <param name="options"> ロガーのオプション </param>
+    /// <param name="options">ロガーのオプション</param>
     public ConsoleMcpLogger(McpLoggerOptions options)
+        : base(options)
     {
         _options = options;
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// MCP ログエントリを記録します。
+    /// </summary>
+    /// <param name="entry">MCP ログエントリ</param>
     public void Log(McpLogEntry entry)
     {
         if (entry.Level < _options.MinimumLevel)
             return;
 
-        var prefix = $"[{entry.Timestamp:HH:mm:ss}] [{entry.Level}]";
-        Console.WriteLine($"{prefix} {entry.LogText}");
+        var categoryPrefix = !string.IsNullOrEmpty(entry.Category) ? $"[{entry.Category}] " : "";
+        var toolPrefix = !string.IsNullOrEmpty(entry.ToolName) ? $"[Tool:{entry.ToolName}] " : "";
+        var prefix = $"[{entry.Timestamp:HH:mm:ss}] [{entry.Level}] {categoryPrefix}{toolPrefix}";
+        Console.WriteLine($"{prefix}{entry.LogText}");
 
         if (entry.Exception != null)
         {
@@ -32,20 +40,29 @@ public sealed class ConsoleMcpLogger : IMcpLogger
     }
 
     /// <inheritdoc/>
-    public void Trace(string message) => Log(new() { Level = McpLogLevel.Trace, LogText = message });
-
-    /// <inheritdoc/>
-    public void Debug(string message) => Log(new() { Level = McpLogLevel.Debug, LogText = message });
-
-    /// <inheritdoc/>
-    public void Info(string message) => Log(new() { Level = McpLogLevel.Information, LogText = message });
-
-    /// <inheritdoc/>
-    public void Warn(string message) => Log(new() { Level = McpLogLevel.Warning, LogText = message });
-
-    /// <inheritdoc/>
-    public void Error(string message, Exception? ex = null) => Log(new() { Level = McpLogLevel.Error, LogText = message, Exception = ex });
-
-    /// <inheritdoc/>
-    public void Critical(string message, Exception? ex = null) => Log(new() { Level = McpLogLevel.Critical, LogText = message, Exception = ex });
+    public override void Log(LogEntry entry)
+    {
+        if (entry is McpLogEntry mcpEntry)
+        {
+            Log(mcpEntry);
+        }
+        else
+        {
+            // 現在の MCP コンテキストから ToolName を取得
+            var currentContext = Ai.Mcp.Context.McpExecutionContext.Current;
+            
+            Log(new McpLogEntry
+            {
+                Timestamp = entry.Timestamp,
+                Level = entry.Level,
+                LogText = entry.LogText,
+                Message = entry.Message,
+                Exception = entry.Exception,
+                CorrelationId = entry.CorrelationId,
+                Category = entry.Category,
+                ToolName = currentContext?.ToolName,
+                Properties = entry.Properties
+            });
+        }
+    }
 }

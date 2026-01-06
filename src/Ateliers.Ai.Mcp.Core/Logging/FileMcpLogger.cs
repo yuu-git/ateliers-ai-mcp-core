@@ -1,12 +1,13 @@
 ﻿using System.Globalization;
 using System.Text;
+using Ateliers.Logging;
 
 namespace Ateliers.Ai.Mcp.Logging;
 
 /// <summary>
 /// ファイルログを管理する MCP ロガー
 /// </summary>
-public sealed class FileMcpLogger : IMcpLogger, IMcpLogReader
+public sealed class FileMcpLogger : FileLogger, IMcpLogger, IMcpLogReader
 {
     private readonly string _logDir;
     private readonly McpLoggerOptions _options;
@@ -14,16 +15,18 @@ public sealed class FileMcpLogger : IMcpLogger, IMcpLogReader
     /// <summary>
     /// ファイル MCP ロガー の新しいインスタンスを初期化します。
     /// </summary>
-    /// <param name="options"> ロガーのオプション </param>
+    /// <param name="options">ロガーのオプション</param>
     public FileMcpLogger(McpLoggerOptions options)
+        : base(options, "mcp")
     {
         _options = options;
         _logDir = options.LogDirectory ?? Path.Combine(AppContext.BaseDirectory, "logs", "app");
-
-        Directory.CreateDirectory(_logDir);
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// MCP ログエントリを記録します。
+    /// </summary>
+    /// <param name="entry">MCP ログエントリ</param>
     public void Log(McpLogEntry entry)
     {
         if (entry.Level < _options.MinimumLevel)
@@ -37,6 +40,11 @@ public sealed class FileMcpLogger : IMcpLogger, IMcpLogReader
         var sb = new StringBuilder();
         sb.Append($"[{entry.Timestamp:O}] [{entry.Level}] ");
         
+        if (!string.IsNullOrEmpty(entry.Category))
+        {
+            sb.Append($"[{entry.Category}] ");
+        }
+
         if (!string.IsNullOrEmpty(entry.CorrelationId))
         {
             sb.Append($"[CID:{entry.CorrelationId}] ");
@@ -59,22 +67,31 @@ public sealed class FileMcpLogger : IMcpLogger, IMcpLogReader
     }
 
     /// <inheritdoc/>
-    public void Trace(string message) => Log(McpLogEntryFactory.Create(McpLogLevel.Trace, message));
-
-    /// <inheritdoc/>
-    public void Debug(string message) => Log(McpLogEntryFactory.Create(McpLogLevel.Debug, message));
-
-    /// <inheritdoc/>
-    public void Info(string message) => Log(McpLogEntryFactory.Create(McpLogLevel.Information, message));
-
-    /// <inheritdoc/>
-    public void Warn(string message) => Log(McpLogEntryFactory.Create(McpLogLevel.Warning, message));
-
-    /// <inheritdoc/>
-    public void Error(string message, Exception? ex = null) => Log(McpLogEntryFactory.Create(McpLogLevel.Error, message, ex));
-
-    /// <inheritdoc/>
-    public void Critical(string message, Exception? ex = null) => Log(McpLogEntryFactory.Create(McpLogLevel.Critical, message, ex));
+    public override void Log(LogEntry entry)
+    {
+        if (entry is McpLogEntry mcpEntry)
+        {
+            Log(mcpEntry);
+        }
+        else
+        {
+            // 現在の MCP コンテキストから ToolName を取得
+            var currentContext = Ai.Mcp.Context.McpExecutionContext.Current;
+            
+            Log(new McpLogEntry
+            {
+                Timestamp = entry.Timestamp,
+                Level = entry.Level,
+                LogText = entry.LogText,
+                Message = entry.Message,
+                Exception = entry.Exception,
+                CorrelationId = entry.CorrelationId,
+                Category = entry.Category,
+                ToolName = currentContext?.ToolName,
+                Properties = entry.Properties
+            });
+        }
+    }
 
     /// <inheritdoc/>
     public McpLogSession ReadByCorrelationId(string correlationId)
@@ -109,6 +126,12 @@ public sealed class FileMcpLogger : IMcpLogger, IMcpLogReader
                 .ToList()
         };
     }
+
+    /// <summary>
+    /// 指定された相関IDに基づいてログセッションを読み取ります（基底インターフェース実装）。
+    /// </summary>
+    LogSession ILogReader.ReadByCorrelationId(string correlationId)
+        => ReadByCorrelationId(correlationId);
 
     private static McpLogSession Empty(string correlationId)
         => new()
@@ -155,18 +178,102 @@ public sealed class FileMcpLogger : IMcpLogger, IMcpLogReader
     }
 
     /// <summary>
-    /// 超ゆるいパーサ。
-    /// フォーマットが変わっても壊れないことを最優先。
+    /// 最後のログセッションを読み取ります（基底インターフェース実装）。
     /// </summary>
+    LogSession ILogReader.ReadLastSession()
+        => ReadLastSession();
+
+    /// <inheritdoc/>
+    public McpLogSession ReadByCategory(string category)
+    {
+        if (!Directory.Exists(_logDir))
+        {
+            return new McpLogSession
+            {
+                CorrelationId = string.Empty,
+                Entries = Array.Empty<McpLogEntry>()
+            };
+        }
+
+        var entries = new List<McpLogEntry>();
+
+        foreach (var file in Directory.EnumerateFiles(_logDir, "*.log"))
+        {
+            foreach (var line in File.ReadLines(file))
+            {
+                if (!line.Contains($"[{category}]", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                var entry = TryParse(line);
+                if (entry != null && entry.Category?.Equals(category, StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    entries.Add(entry);
+                }
+            }
+        }
+
+        return new McpLogSession
+        {
+            CorrelationId = string.Empty,
+            Entries = entries
+                .OrderBy(e => e.Timestamp)
+                .ToList()
+        };
+    }
+
+    /// <summary>
+    /// 指定されたカテゴリに基づいてログセッションを読み取ります（基底インターフェース実装）。
+    /// </summary>
+    LogSession ILogReader.ReadByCategory(string category)
+        => ReadByCategory(category);
+
+    /// <inheritdoc/>
+    public McpLogSession ReadByCorrelationIdAndCategory(string correlationId, string category)
+    {
+        if (!Directory.Exists(_logDir))
+        {
+            return Empty(correlationId);
+        }
+
+        var entries = new List<McpLogEntry>();
+
+        foreach (var file in Directory.EnumerateFiles(_logDir, "*.log"))
+        {
+            foreach (var line in File.ReadLines(file))
+            {
+                if (!line.Contains(correlationId, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                if (!line.Contains($"[{category}]", StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                var entry = TryParse(line);
+                if (entry != null && entry.Category?.Equals(category, StringComparison.OrdinalIgnoreCase) == true)
+                {
+                    entries.Add(entry);
+                }
+            }
+        }
+
+        return new McpLogSession
+        {
+            CorrelationId = correlationId,
+            Entries = entries
+                .OrderBy(e => e.Timestamp)
+                .ToList()
+        };
+    }
+
+    /// <summary>
+    /// 指定された相関IDとカテゴリに基づいてログセッションを読み取ります（基底インターフェース実装）。
+    /// </summary>
+    LogSession ILogReader.ReadByCorrelationIdAndCategory(string correlationId, string category)
+        => ReadByCorrelationIdAndCategory(correlationId, category);
+
     private static McpLogEntry? TryParse(string line)
     {
-        // 例想定:
-        // [2026-01-04T19:47:36.4512537+00:00] [INFO] message...
-        // フォーマットが違っても message として拾う
-
         try
         {
-            // タイムスタンプが角括弧で囲まれている形式に対応
             if (!line.StartsWith('['))
             {
                 return Fallback(line);
@@ -178,7 +285,6 @@ public sealed class FileMcpLogger : IMcpLogger, IMcpLogReader
                 return Fallback(line);
             }
 
-            // 角括弧を除いたタイムスタンプ部分を取得
             var timestampText = line[1..timestampEnd];
             if (!DateTimeOffset.TryParse(
                     timestampText,
@@ -187,6 +293,23 @@ public sealed class FileMcpLogger : IMcpLogger, IMcpLogReader
                     out var timestamp))
             {
                 return Fallback(line);
+            }
+
+            var level = ExtractLevel(line);
+
+            var categoryIndex = line.IndexOf('[', timestampEnd + 1);
+            var category = string.Empty;
+            if (categoryIndex >= 0)
+            {
+                var categoryEnd = line.IndexOf(']', categoryIndex);
+                if (categoryEnd > categoryIndex)
+                {
+                    var categoryText = line[(categoryIndex + 1)..categoryEnd];
+                    if (!categoryText.StartsWith("CID:") && !categoryText.StartsWith("Tool:"))
+                    {
+                        category = categoryText;
+                    }
+                }
             }
 
             var correlationIdIndex = line.IndexOf("[CID:", StringComparison.OrdinalIgnoreCase);
@@ -222,8 +345,9 @@ public sealed class FileMcpLogger : IMcpLogger, IMcpLogReader
             {
                 CorrelationId = correlationId,
                 ToolName = toolName,
+                Category = category,
                 Timestamp = timestamp,
-                Level = ExtractLevel(line),
+                Level = level,
                 LogText = line,
                 Message = message
             };
@@ -238,20 +362,19 @@ public sealed class FileMcpLogger : IMcpLogger, IMcpLogReader
         => new()
         {
             Timestamp = DateTimeOffset.MinValue,
-            Level = McpLogLevel.UNKNOWN,
+            Level = LogLevel.Unknown,
             LogText = line
         };
 
-    private static McpLogLevel ExtractLevel(string line)
+    private static LogLevel ExtractLevel(string line)
     {
-        if (line.Contains("[Trace]")) return McpLogLevel.Trace;
-        if (line.Contains("[Debug]")) return McpLogLevel.Debug;
+        if (line.Contains("[Trace]")) return LogLevel.Trace;
+        if (line.Contains("[Debug]")) return LogLevel.Debug;
+        if (line.Contains("[Information]")) return LogLevel.Information;
+        if (line.Contains("[Warning]")) return LogLevel.Warning;
+        if (line.Contains("[Error]")) return LogLevel.Error;
+        if (line.Contains("[Critical]")) return LogLevel.Critical;
 
-        if (line.Contains("[Information]")) return McpLogLevel.Information;
-        if (line.Contains("[Warning]")) return McpLogLevel.Warning;
-        if (line.Contains("[Error]")) return McpLogLevel.Error;
-        if (line.Contains("[Critical]")) return McpLogLevel.Critical;
-
-        return McpLogLevel.UNKNOWN;
+        return LogLevel.Unknown;
     }
 }

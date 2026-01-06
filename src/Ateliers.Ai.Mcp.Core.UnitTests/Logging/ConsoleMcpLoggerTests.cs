@@ -1,3 +1,4 @@
+ï»¿using Ateliers.Logging;
 using Ateliers.Ai.Mcp.Logging;
 using System.Text;
 
@@ -27,7 +28,7 @@ public class ConsoleMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"Å¬ƒŒƒxƒ‹ˆÈã‚ÌƒƒOƒGƒ“ƒgƒŠ‚ªƒRƒ“ƒ\[ƒ‹‚Éo—Í‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"æœ€å°ãƒ¬ãƒ™ãƒ«ä»¥ä¸Šã®ãƒ­ã‚°ã‚¨ãƒ³ãƒˆãƒªãŒã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã«å‡ºåŠ›ã•ã‚Œã‚‹ã“ã¨")]
     public void Log_ShouldWriteToConsoleWhenLevelIsAboveMinimum()
     {
         // Arrange
@@ -35,7 +36,7 @@ public class ConsoleMcpLoggerTests : IDisposable
         var logger = new ConsoleMcpLogger(options);
         var entry = new McpLogEntry
         {
-            Level = McpLogLevel.Information,
+            Level = LogLevel.Information,
             LogText = "Test message"
         };
 
@@ -49,7 +50,7 @@ public class ConsoleMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"Å¬ƒŒƒxƒ‹–¢–‚ÌƒƒOƒGƒ“ƒgƒŠ‚ªƒRƒ“ƒ\[ƒ‹‚Éo—Í‚³‚ê‚È‚¢‚±‚Æ")]
+    [Trait("èª¬æ˜", @"æœ€å°ãƒ¬ãƒ™ãƒ«æœªæº€ã®ãƒ­ã‚°ã‚¨ãƒ³ãƒˆãƒªãŒã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã«å‡ºåŠ›ã•ã‚Œãªã„ã“ã¨")]
     public void Log_ShouldNotWriteToConsoleWhenLevelIsBelowMinimum()
     {
         // Arrange
@@ -57,7 +58,7 @@ public class ConsoleMcpLoggerTests : IDisposable
         var logger = new ConsoleMcpLogger(options);
         var entry = new McpLogEntry
         {
-            Level = McpLogLevel.Debug,
+            Level = LogLevel.Debug,
             LogText = "Debug message"
         };
 
@@ -70,7 +71,7 @@ public class ConsoleMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"Info ƒƒ\ƒbƒh‚Åî•ñƒŒƒxƒ‹‚ÌƒƒO‚ªƒRƒ“ƒ\[ƒ‹‚Éo—Í‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"Info ãƒ¡ã‚½ãƒƒãƒ‰ã§æƒ…å ±ãƒ¬ãƒ™ãƒ«ã®ãƒ­ã‚°ãŒã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã«å‡ºåŠ›ã•ã‚Œã‚‹ã“ã¨")]
     public void Info_ShouldLogInformationLevel()
     {
         // Arrange
@@ -87,7 +88,7 @@ public class ConsoleMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"Warn ƒƒ\ƒbƒh‚ÅŒxƒŒƒxƒ‹‚ÌƒƒO‚ªƒRƒ“ƒ\[ƒ‹‚Éo—Í‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"Warn ãƒ¡ã‚½ãƒƒãƒ‰ã§è­¦å‘Šãƒ¬ãƒ™ãƒ«ã®ãƒ­ã‚°ãŒã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã«å‡ºåŠ›ã•ã‚Œã‚‹ã“ã¨")]
     public void Warn_ShouldLogWarningLevel()
     {
         // Arrange
@@ -104,7 +105,7 @@ public class ConsoleMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"Error ƒƒ\ƒbƒh‚ÅƒGƒ‰[ƒŒƒxƒ‹‚ÌƒƒO‚Æ—áŠO‚ªƒRƒ“ƒ\[ƒ‹‚Éo—Í‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"Error ãƒ¡ã‚½ãƒƒãƒ‰ã§ã‚¨ãƒ©ãƒ¼ãƒ¬ãƒ™ãƒ«ã®ãƒ­ã‚°ã¨ä¾‹å¤–ãŒã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã«å‡ºåŠ›ã•ã‚Œã‚‹ã“ã¨")]
     public void Error_ShouldLogErrorLevel()
     {
         // Arrange
@@ -123,7 +124,7 @@ public class ConsoleMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"Critical ƒƒ\ƒbƒh‚Åd‘åƒŒƒxƒ‹‚ÌƒƒO‚Æ—áŠO‚ªƒRƒ“ƒ\[ƒ‹‚Éo—Í‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"Critical ãƒ¡ã‚½ãƒƒãƒ‰ã§é‡å¤§ãƒ¬ãƒ™ãƒ«ã®ãƒ­ã‚°ã¨ä¾‹å¤–ãŒã‚³ãƒ³ã‚½ãƒ¼ãƒ«ã«å‡ºåŠ›ã•ã‚Œã‚‹ã“ã¨")]
     public void Critical_ShouldLogCriticalLevel()
     {
         // Arrange
@@ -142,7 +143,7 @@ public class ConsoleMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"•¡”‚ÌƒƒOŒÄ‚Ño‚µ‚ÅƒRƒ“ƒ\[ƒ‹o—Í‚ª’~Ï‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"è¤‡æ•°ã®ãƒ­ã‚°å‘¼ã³å‡ºã—ã§ã‚³ãƒ³ã‚½ãƒ¼ãƒ«å‡ºåŠ›ãŒè“„ç©ã•ã‚Œã‚‹ã“ã¨")]
     public void MultipleLogCalls_ShouldAccumulateConsoleOutput()
     {
         // Arrange
@@ -162,7 +163,7 @@ public class ConsoleMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"ƒ^ƒCƒ€ƒXƒ^ƒ“ƒv‚ªHH:mm:ssƒtƒH[ƒ}ƒbƒg‚Åo—Í‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"ã‚¿ã‚¤ãƒ ã‚¹ã‚¿ãƒ³ãƒ—ãŒHH:mm:ssãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã§å‡ºåŠ›ã•ã‚Œã‚‹ã“ã¨")]
     public void Log_ShouldFormatTimestampCorrectly()
     {
         // Arrange
@@ -171,7 +172,7 @@ public class ConsoleMcpLoggerTests : IDisposable
         var timestamp = new DateTimeOffset(2025, 1, 15, 14, 30, 45, TimeSpan.Zero);
         var entry = new McpLogEntry
         {
-            Level = McpLogLevel.Information,
+            Level = LogLevel.Information,
             LogText = "Test message",
             Timestamp = timestamp
         };
@@ -185,7 +186,7 @@ public class ConsoleMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"—áŠO‚ª‚È‚¢ê‡A—áŠOî•ñ‚ªo—Í‚³‚ê‚È‚¢‚±‚Æ")]
+    [Trait("èª¬æ˜", @"ä¾‹å¤–ãŒãªã„å ´åˆã€ä¾‹å¤–æƒ…å ±ãŒå‡ºåŠ›ã•ã‚Œãªã„ã“ã¨")]
     public void Log_ShouldNotWriteExceptionWhenNull()
     {
         // Arrange
@@ -193,7 +194,7 @@ public class ConsoleMcpLoggerTests : IDisposable
         var logger = new ConsoleMcpLogger(options);
         var entry = new McpLogEntry
         {
-            Level = McpLogLevel.Error,
+            Level = LogLevel.Error,
             LogText = "Error without exception",
             Exception = null
         };

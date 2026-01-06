@@ -1,5 +1,6 @@
-using Ateliers.Ai.Mcp.Context;
+ï»¿using Ateliers.Ai.Mcp.Context;
 using Ateliers.Ai.Mcp.Logging;
+using Ateliers.Logging;
 
 namespace Ateliers.Ai.Mcp.Core.UnitTests.Logging;
 
@@ -22,7 +23,7 @@ public class FileMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"ƒƒOƒtƒ@ƒCƒ‹‚ªì¬‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"ãƒ­ã‚°ãƒ•ã‚¡ã‚¤ãƒ«ãŒä½œæˆã•ã‚Œã‚‹ã“ã¨")]
     public void Log_ShouldCreateLogFile()
     {
         // Arrange
@@ -30,7 +31,7 @@ public class FileMcpLoggerTests : IDisposable
         var logger = new FileMcpLogger(options);
         var entry = new McpLogEntry
         {
-            Level = McpLogLevel.Information,
+            Level = LogLevel.Information,
             LogText = "Test message"
         };
 
@@ -43,7 +44,7 @@ public class FileMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"Å¬ƒŒƒxƒ‹ˆÈã‚ÌƒƒOƒGƒ“ƒgƒŠ‚ª‹L˜^‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"æœ€å°ãƒ¬ãƒ™ãƒ«ä»¥ä¸Šã®ãƒ­ã‚°ã‚¨ãƒ³ãƒˆãƒªã‚’è¨˜éŒ²ã™ã‚‹ã“ã¨")]
     public void Log_ShouldAddEntryWhenLevelIsAboveMinimum()
     {
         // Arrange
@@ -51,7 +52,7 @@ public class FileMcpLoggerTests : IDisposable
         var logger = new FileMcpLogger(options);
         var entry = new McpLogEntry
         {
-            Level = McpLogLevel.Information,
+            Level = LogLevel.Information,
             LogText = "Test message"
         };
 
@@ -66,7 +67,7 @@ public class FileMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"Å¬ƒŒƒxƒ‹–¢–‚ÌƒƒOƒGƒ“ƒgƒŠ‚ª‹L˜^‚³‚ê‚È‚¢‚±‚Æ")]
+    [Trait("èª¬æ˜", @"æœ€å°ãƒ¬ãƒ™ãƒ«æœªæº€ã®ãƒ­ã‚°ã‚¨ãƒ³ãƒˆãƒªã‚’è¨˜éŒ²ã—ãªã„ã“ã¨")]
     public void Log_ShouldNotAddEntryWhenLevelIsBelowMinimum()
     {
         // Arrange
@@ -74,7 +75,7 @@ public class FileMcpLoggerTests : IDisposable
         var logger = new FileMcpLogger(options);
         var entry = new McpLogEntry
         {
-            Level = McpLogLevel.Debug,
+            Level = LogLevel.Debug,
             LogText = "Debug message"
         };
 
@@ -91,7 +92,7 @@ public class FileMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"Info ƒƒ\ƒbƒh‚Åî•ñƒŒƒxƒ‹‚ÌƒƒO‚ª‹L˜^‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"Info ãƒ¡ã‚½ãƒƒãƒ‰ã§æƒ…å ±ãƒ¬ãƒ™ãƒ«ã®ãƒ­ã‚°ã‚’è¨˜éŒ²ã™ã‚‹ã“ã¨")]
     public void Info_ShouldLogInformationLevel()
     {
         // Arrange
@@ -109,7 +110,7 @@ public class FileMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"Warn ƒƒ\ƒbƒh‚ÅŒxƒŒƒxƒ‹‚ÌƒƒO‚ª‹L˜^‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"Warn ãƒ¡ã‚½ãƒƒãƒ‰ã§è­¦å‘Šãƒ¬ãƒ™ãƒ«ã®ãƒ­ã‚°ã‚’è¨˜éŒ²ã™ã‚‹ã“ã¨")]
     public void Warn_ShouldLogWarningLevel()
     {
         // Arrange
@@ -127,7 +128,7 @@ public class FileMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"Error ƒƒ\ƒbƒh‚ÅƒGƒ‰[ƒŒƒxƒ‹‚ÌƒƒO‚Æ—áŠO‚ª‹L˜^‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"Error ãƒ¡ã‚½ãƒƒãƒ‰ã§ã‚¨ãƒ©ãƒ¼ãƒ¬ãƒ™ãƒ«ã®ãƒ­ã‚°ã¨ä¾‹å¤–ã‚’è¨˜éŒ²ã™ã‚‹ã“ã¨")]
     public void Error_ShouldLogErrorLevel()
     {
         // Arrange
@@ -147,7 +148,7 @@ public class FileMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"Critical ƒƒ\ƒbƒh‚Åd‘åƒŒƒxƒ‹‚ÌƒƒO‚Æ—áŠO‚ª‹L˜^‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"Critical ãƒ¡ã‚½ãƒƒãƒ‰ã§é‡å¤§ãƒ¬ãƒ™ãƒ«ã®ãƒ­ã‚°ã¨ä¾‹å¤–ã‚’è¨˜éŒ²ã™ã‚‹ã“ã¨")]
     public void Critical_ShouldLogCriticalLevel()
     {
         // Arrange
@@ -167,7 +168,7 @@ public class FileMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"•¡”‚ÌƒƒOŒÄ‚Ño‚µ‚ÅƒGƒ“ƒgƒŠ‚ª’~Ï‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"è¤‡æ•°ã®ãƒ­ã‚°å‘¼ã³å‡ºã—ã§ã‚¨ãƒ³ãƒˆãƒªãŒè“„ç©ã•ã‚Œã‚‹ã“ã¨")]
     public void MultipleLogCalls_ShouldAccumulateEntries()
     {
         // Arrange
@@ -188,7 +189,7 @@ public class FileMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"ƒƒOƒtƒ@ƒCƒ‹–¼‚ª“ú•tƒtƒH[ƒ}ƒbƒg‚Å‚ ‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"ãƒ­ã‚°ãƒ•ã‚¡ã‚¤ãƒ«åã«æ—¥ä»˜ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆã§ã‚ã‚‹ã“ã¨")]
     public void LogFileName_ShouldContainDate()
     {
         // Arrange
@@ -206,7 +207,7 @@ public class FileMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"‘¶İ‚µ‚È‚¢‘ŠŠÖID‚ÅŒŸõ‚µ‚½ê‡A‹ó‚ÌƒZƒbƒVƒ‡ƒ“‚ª•Ô‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"å­˜åœ¨ã—ãªã„ç›¸é–¢IDã§æ¤œç´¢ã—ãŸå ´åˆã€ç©ºã®ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’è¿”ã™ã“ã¨")]
     public void ReadByCorrelationId_ShouldReturnEmptySessionWhenCorrelationIdNotFound()
     {
         // Arrange
@@ -222,7 +223,7 @@ public class FileMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"‘¶İ‚µ‚È‚¢ƒƒOƒfƒBƒŒƒNƒgƒŠ‚ÅŒŸõ‚µ‚½ê‡A‹ó‚ÌƒZƒbƒVƒ‡ƒ“‚ª•Ô‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"å­˜åœ¨ã—ãªã„ãƒ­ã‚°ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã§æ¤œç´¢ã—ãŸå ´åˆã€ç©ºã®ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’è¿”ã™ã“ã¨")]
     public void ReadByCorrelationId_ShouldReturnEmptySessionWhenDirectoryNotExists()
     {
         // Arrange
@@ -239,7 +240,7 @@ public class FileMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"ƒƒOƒfƒBƒŒƒNƒgƒŠ‚ªw’è‚³‚ê‚Ä‚¢‚È‚¢ê‡AƒfƒtƒHƒ‹ƒgƒfƒBƒŒƒNƒgƒŠ‚ªg—p‚³‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"ãƒ­ã‚°ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªãŒæŒ‡å®šã•ã‚Œã¦ã„ãªã„å ´åˆã€ãƒ‡ãƒ•ã‚©ãƒ«ãƒˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‚’ä½¿ç”¨ã™ã‚‹ã“ã¨")]
     public void Constructor_ShouldUseDefaultDirectoryWhenNotSpecified()
     {
         // Arrange & Act
@@ -253,7 +254,7 @@ public class FileMcpLoggerTests : IDisposable
     }
 
     [Fact]
-    [Trait("à–¾", @"‘ŠŠÖID‚ÅƒƒOƒZƒbƒVƒ‡ƒ“‚ğ³‚µ‚­“Ç‚İæ‚ê‚é‚±‚Æ")]
+    [Trait("èª¬æ˜", @"ç›¸é–¢IDã§ãƒ­ã‚°ã‚»ãƒƒã‚·ãƒ§ãƒ³ã‚’æ­£ã—ãèª­ã¿å–ã‚‹ã“ã¨")]
     public async Task ReadNyCorrelationId_ShouldReturnCorrectSession()
     {
         // Arrange
@@ -275,9 +276,9 @@ public class FileMcpLoggerTests : IDisposable
         Assert.Equal(2, session.Entries.Count);
         // First Entry
         Assert.Equal("Test.Start", session.Entries[0].Message);
-        Assert.Equal(McpLogLevel.Information, session.Entries[0].Level);
+        Assert.Equal(LogLevel.Information, session.Entries[0].Level);
         // Second Entry
         Assert.Equal("Test.Success", session.Entries[1].Message);
-        Assert.Equal(McpLogLevel.Information, session.Entries[1].Level);
+        Assert.Equal(LogLevel.Information, session.Entries[1].Level);
     }
 }

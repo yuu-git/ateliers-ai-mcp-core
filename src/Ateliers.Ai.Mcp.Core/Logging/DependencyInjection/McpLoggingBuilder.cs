@@ -1,4 +1,6 @@
-﻿namespace Ateliers.Ai.Mcp.Logging.DependencyInjection;
+﻿using Ateliers.Logging;
+
+namespace Ateliers.Ai.Mcp.Logging.DependencyInjection;
 
 /// <summary>
 /// MCP ロギング ビルダーを表します。
@@ -11,9 +13,9 @@ public sealed class McpLoggingBuilder
     /// <summary>
     /// 最小ログレベルを設定します。
     /// </summary>
-    /// <param name="level"> ログレベル。</param>
-    /// <returns> このビルダーのインスタンス。</returns>
-    public McpLoggingBuilder SetMinimumLevel(McpLogLevel level)
+    /// <param name="level">ログレベル</param>
+    /// <returns>このビルダーのインスタンス</returns>
+    public McpLoggingBuilder SetMinimumLevel(LogLevel level)
     {
         Options.MinimumLevel = level;
         return this;
@@ -22,7 +24,7 @@ public sealed class McpLoggingBuilder
     /// <summary>
     /// コンソール ロガーを追加します。
     /// </summary>
-    /// <returns> このビルダーのインスタンス。</returns>
+    /// <returns>このビルダーのインスタンス</returns>
     public McpLoggingBuilder AddConsole()
     {
         Loggers.Add(new ConsoleMcpLogger(Options));
@@ -32,8 +34,8 @@ public sealed class McpLoggingBuilder
     /// <summary>
     /// ファイル ロガーを追加します。
     /// </summary>
-    /// <param name="logDirectory"> ログ ディレクトリのパス。指定しない場合、デフォルトのログ ディレクトリが使用されます。</param>
-    /// <returns> このビルダーのインスタンス。</returns>
+    /// <param name="logDirectory">ログ ディレクトリのパス。指定しない場合、デフォルトのログ ディレクトリが使用されます</param>
+    /// <returns>このビルダーのインスタンス</returns>
     public McpLoggingBuilder AddFile(string? logDirectory = null)
     {
         var options = new McpLoggerOptions
@@ -49,8 +51,8 @@ public sealed class McpLoggingBuilder
     /// <summary>
     /// インメモリ ロガーを追加します。
     /// </summary>
-    /// <param name="logger"> 追加されたインメモリ ロガー。</param>
-    /// <returns> このビルダーのインスタンス。</returns>
+    /// <param name="logger">追加されたインメモリ ロガー</param>
+    /// <returns>このビルダーのインスタンス</returns>
     public McpLoggingBuilder AddInMemory(out InMemoryMcpLogger logger)
     {
         logger = new InMemoryMcpLogger(Options);
