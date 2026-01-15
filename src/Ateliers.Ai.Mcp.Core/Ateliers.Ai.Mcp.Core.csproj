@@ -40,7 +40,7 @@
   <!-- 基本的な依存パッケージ -->
   <ItemGroup>
     <PackageReference Include="Ateliers.Core" Version="0.1.0-alpha.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.1" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
   </ItemGroup>
 </Project>
